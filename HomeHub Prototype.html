@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>HomeHub Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#2A2A5A;
+    --bg:#F5F6FB;
+    --card:#FFFFFF;
+    --ink:#232338;
+    --sub:#7B7E96;
+    --line:#ECEDF5;
+
+    --repair:#FF8A3D; --repair-bg:#FFF1E3;
+    --gas:#2BBFBC;    --gas-bg:#E4F8F7;
+    --care:#FF6F91;   --care-bg:#FFEAF0;
+    --recycle:#4FAE7C;--recycle-bg:#E8F6EE;
+    --pet:#9B6BD9;    --pet-bg:#F1E9FB;
+    --expense:#E0A72E;--expense-bg:#FBF1DD;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 30% 20%, #383876, #17172F 70%);
+    font-family:'Nunito', sans-serif; padding:40px 20px;
+  }
+  h1,h2,h3,.display{font-family:'Baloo 2', sans-serif;}
+
+  .phone{ width:390px; height:820px; background:#0d0d1a; border-radius:48px; padding:14px;
+    box-shadow:0 40px 80px rgba(0,0,0,.5), 0 0 0 2px rgba(255,255,255,.05) inset; position:relative; }
+  .screen-wrap{ width:100%; height:100%; background:var(--bg); border-radius:36px; overflow:hidden; position:relative; }
+  .notch{ position:absolute; top:14px; left:50%; transform:translateX(-50%); width:120px; height:26px; background:#0d0d1a; border-radius:20px; z-index:50; }
+  .statusbar{ height:46px; display:flex; align-items:flex-end; justify-content:space-between; padding:0 26px 6px 26px; font-size:13px; font-weight:800; color:var(--ink); }
+  .statusbar .icons{display:flex; gap:5px; align-items:center; font-size:12px;}
+
+  .screen{ display:none; flex-direction:column; height:calc(100% - 46px); }
+  .screen.active{display:flex;}
+  .content{ flex:1; overflow-y:auto; padding:6px 20px 20px 20px; }
+  .content::-webkit-scrollbar{display:none;}
+
+  .header{ padding:18px 20px 22px 20px; color:#fff; position:relative; display:flex; flex-direction:column; }
+  .header .toprow{display:flex; align-items:center; justify-content:space-between;}
+  .header .back{ width:34px; height:34px; border-radius:12px; background:rgba(255,255,255,.25); border:none; color:#fff; font-size:16px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .header .back:hover{background:rgba(255,255,255,.4);}
+  .header .iconbtn{ width:34px; height:34px; border-radius:12px; background:rgba(255,255,255,.25); border:none; color:#fff; font-size:15px; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative;}
+  .header .iconbtn:hover{background:rgba(255,255,255,.4);}
+  .header .ptspill{ position:absolute; top:-6px; right:-8px; background:#fff; color:var(--recycle); font-size:9.5px; font-weight:900; padding:2px 5px; border-radius:8px; }
+  .header h2{margin:14px 0 0 0; font-size:22px;}
+  .header p{margin:6px 0 0 0; font-size:13.5px; opacity:.92; font-weight:600;}
+  .header-icon-row{display:flex; align-items:center; gap:14px; margin-top:14px;}
+  .header-icon-box{ width:52px; height:52px; border-radius:16px; background:#fff; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+  .header-icon-row h2{margin:0; font-size:20px;}
+  .header-icon-row p{margin:4px 0 0 0; font-size:12.5px;}
+
+  .home-header{ padding:26px 20px 10px 20px; display:flex; justify-content:space-between; align-items:center; }
+  .greeting h1{margin:0; font-size:21px; color:var(--ink);}
+  .greeting span{font-size:13px; color:var(--sub); font-weight:700;}
+  .avatar{ width:42px;height:42px;border-radius:14px; background:linear-gradient(135deg,var(--pet),var(--care)); display:flex;align-items:center;justify-content:center; color:#fff; font-weight:800; font-size:15px; overflow:hidden;}
+  .avatar img{width:100%; height:100%; object-fit:cover;}
+  .search{ margin:14px 20px 6px 20px; background:#fff; border:1.5px solid var(--line); border-radius:16px; padding:12px 16px; color:var(--sub); font-weight:700; font-size:13.5px; display:flex; gap:8px; align-items:center; }
+
+  .quickcats{display:flex; gap:18px; padding:16px 20px 4px 20px; overflow-x:auto;}
+  .quickcat{display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; flex-shrink:0;}
+  .quickcat .qicon{width:52px;height:52px;border-radius:16px; display:flex;align-items:center;justify-content:center; font-size:22px;}
+  .quickcat span{font-size:11px; font-weight:800; color:var(--ink);}
+
+  .promo-card{ margin:14px 20px; background:linear-gradient(135deg,#FF8A3D,#E8532B); border-radius:20px; padding:18px 20px; color:#fff; position:relative; overflow:hidden; }
+  .promo-card .tag{background:rgba(255,255,255,.25); font-size:10.5px; font-weight:800; padding:4px 10px; border-radius:20px; display:inline-block; margin-bottom:8px;}
+  .promo-card h3{margin:0 0 4px 0; font-size:18px; color:#fff;}
+  .promo-card p{margin:0 0 12px 0; font-size:12px; font-weight:700; opacity:.95;}
+  .promo-card button{background:#fff; color:var(--repair); border:none; padding:9px 18px; border-radius:12px; font-weight:800; font-size:12.5px; cursor:pointer;}
+
+  .spend-card{ margin:16px 20px 4px 20px; background:var(--navy); border-radius:20px; padding:18px 20px; color:#fff; display:flex; justify-content:space-between; align-items:center; cursor:pointer; box-shadow:0 10px 24px rgba(42,42,90,.35); }
+  .spend-card .amt{font-family:'Baloo 2'; font-size:24px; font-weight:700;}
+  .spend-card .lbl{font-size:12px; opacity:.75; font-weight:700; text-transform:uppercase; letter-spacing:.4px;}
+  .spend-card .arrow{ width:32px;height:32px;border-radius:10px; background:rgba(255,255,255,.15); display:flex;align-items:center;justify-content:center; }
+
+  .section-title{ margin:22px 20px 12px 20px; font-size:15px; font-weight:800; color:var(--ink); display:flex; justify-content:space-between; align-items:center;}
+  .section-title span.link{font-size:12px; color:var(--recycle); font-weight:800; cursor:pointer;}
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:0 20px 10px 20px; }
+  .app-tile{ background:#fff; border-radius:20px; padding:16px 14px; cursor:pointer; border:1.5px solid var(--line); transition:transform .12s ease; }
+  .app-tile:active{transform:scale(.96);}
+  .app-tile .icon{ width:46px;height:46px; border-radius:14px; display:flex;align-items:center;justify-content:center; font-size:22px; margin-bottom:10px; }
+  .app-tile .name{font-weight:800; font-size:13.5px; color:var(--ink);}
+  .app-tile .desc{font-size:11px; color:var(--sub); font-weight:700; margin-top:2px;}
+
+  .popular-row{display:flex; gap:12px; padding:0 20px 20px 20px; overflow-x:auto;}
+  .popular-card{min-width:150px; background:#fff; border:1.5px solid var(--line); border-radius:18px; padding:14px; cursor:pointer;}
+  .popular-card .picon{width:38px;height:38px;border-radius:12px; display:flex;align-items:center;justify-content:center; font-size:17px; margin-bottom:10px;}
+  .popular-card .pname{font-weight:800; font-size:12.5px; color:var(--ink);}
+  .popular-card .pfrom{font-size:11px; color:var(--sub); font-weight:700; margin-top:2px;}
+  .popular-card .prate{font-size:11px; color:#F2B705; font-weight:800; margin-top:6px;}
+
+  .bottomnav{ height:74px; background:#fff; border-top:1.5px solid var(--line); display:flex; }
+  .navbtn{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; border:none; background:none; cursor:pointer; color:var(--sub); font-weight:800; font-size:10.5px; }
+  .navbtn.active{color:var(--navy);}
+  .navbtn .navicon{font-size:19px;}
+
+  .card{ background:var(--card); border:1.5px solid var(--line); border-radius:18px; padding:16px 18px; margin-bottom:14px; }
+  .card h3{margin:0 0 4px 0; font-size:15.5px; color:var(--ink);}
+  .card p.desc{margin:0 0 12px 0; font-size:12.5px; color:var(--sub); font-weight:700; line-height:1.5;}
+  .row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .chip{ padding:8px 14px; border-radius:12px; font-size:12px; font-weight:800; background:var(--bg); color:var(--ink); border:1.5px solid var(--line); cursor:pointer; }
+  .chip.on{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .chiprow{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px;}
+
+  .btn{ width:100%; border:none; padding:13px 16px; border-radius:14px; font-weight:800; font-size:14px; cursor:pointer; color:#fff; font-family:'Nunito'; }
+  .btn:active{opacity:.85;}
+  .btn:disabled{background:#D6D8E4 !important; color:#9EA1B5; cursor:not-allowed;}
+  .btn.small{width:auto; padding:9px 16px; font-size:12.5px;}
+  .btn.outline{ background:#fff; color:var(--ink); border:1.5px solid var(--line); }
+  .btn.ghost{background:none; color:var(--navy); text-decoration:underline; padding:6px;}
+
+  .badge{ display:inline-block; font-size:10px; font-weight:800; padding:3px 9px; border-radius:20px; margin-left:6px; }
+  .stars{color:#F2B705; font-size:12px; font-weight:800;}
+
+  .pick-card{ display:flex; gap:12px; align-items:center; border:1.5px solid var(--line); border-radius:16px; padding:10px 14px; margin-bottom:10px; cursor:pointer; }
+  .pick-card.selected{ border-color:var(--navy); background:#F1F1FA; }
+  .pick-card .pav{ width:46px;height:46px;border-radius:12px; flex-shrink:0; overflow:hidden; display:flex;align-items:center;justify-content:center; font-size:16px; color:#fff; font-weight:800;}
+  .pick-card .pav img{width:100%; height:100%; object-fit:cover;}
+  .pick-card .pinfo{flex:1;}
+  .pick-card .pinfo .pname{font-weight:800; font-size:13.5px; color:var(--ink);}
+  .pick-card .pinfo .pmeta{font-size:11.5px; color:var(--sub); font-weight:700; margin-top:2px;}
+  .pick-card .pprice{font-weight:900; color:var(--ink); font-size:14px;}
+  .pick-card .check{ width:20px;height:20px;border-radius:50%; border:2px solid var(--line); flex-shrink:0; display:flex;align-items:center;justify-content:center; font-size:11px; color:#fff; }
+  .pick-card.selected .check{background:var(--navy); border-color:var(--navy);}
+
+  label.flabel{display:block; font-size:12px; font-weight:800; color:var(--sub); margin:14px 0 6px 0;}
+  input[type=number], input[type=text], input[type=date], input[type=time], input[type=email], input[type=password], select, textarea{
+    width:100%; padding:11px 13px; border-radius:12px; border:1.5px solid var(--line); font-family:'Nunito'; font-size:13.5px; font-weight:700; color:var(--ink); background:#fff;
+  }
+  textarea{resize:none; min-height:64px; font-weight:600;}
+  .field-hint{font-size:11px; color:var(--sub); font-weight:700; margin-top:4px;}
+  .time-select-row{display:flex; align-items:center; gap:8px; margin-top:10px;}
+  .time-select-row select{width:auto; flex:0 0 62px; padding:11px 6px; text-align:center;}
+  .time-select-row .time-colon{font-weight:900; color:var(--ink); font-size:15px;}
+  .time-select-row .ampm-row{display:flex; gap:8px; margin-left:8px; flex:1;}
+  .time-select-row .ampm-row .chip{flex:1; text-align:center; padding:10px 6px;}
+
+  .confirm-wrap{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center; }
+  .check-circle{ width:74px;height:74px; border-radius:50%; background:#E8F6EE; color:var(--recycle); display:flex;align-items:center;justify-content:center; font-size:34px; margin-bottom:18px; }
+  .confirm-wrap h2{margin:0 0 6px 0; font-size:20px; color:var(--ink);}
+  .confirm-wrap p{margin:0 0 22px 0; color:var(--sub); font-weight:700; font-size:13px;}
+  .confirm-card{ width:100%; background:#fff; border-radius:16px; border:1.5px solid var(--line); padding:16px; margin-bottom:24px; text-align:left; }
+  .confirm-card .r{display:flex; justify-content:space-between; padding:6px 0; font-size:12.5px; font-weight:700;}
+  .confirm-card .r span:first-child{color:var(--sub);}
+  .confirm-card .r span:last-child{color:var(--ink); text-align:right; max-width:60%;}
+
+  .exp-total{ background:linear-gradient(135deg, var(--expense), #C88A1A); border-radius:20px; padding:20px; color:#fff; margin-bottom:18px; }
+  .exp-total .big{font-family:'Baloo 2'; font-size:30px; font-weight:700;}
+  .bars{display:flex; align-items:flex-end; gap:10px; height:110px; margin:10px 0 26px 0;}
+  .bar-col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;}
+  .bar{width:100%; border-radius:8px 8px 0 0; background:var(--line); transition:height .35s ease;}
+  .bar-col .blabel{font-size:9px; font-weight:800; color:var(--sub); margin-top:10px; text-align:center;}
+  .exp-row{display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--line); font-size:13px;}
+  .exp-row:last-child{border-bottom:none;}
+  .exp-row .l{display:flex; align-items:center; gap:10px; font-weight:700; color:var(--ink);}
+  .exp-row .dot{width:9px;height:9px;border-radius:50%;}
+  .exp-row .amt{font-weight:800; color:var(--ink);}
+  .empty-note{text-align:center; font-size:12px; color:var(--sub); font-weight:700; padding:6px 0 16px 0;}
+
+  .detail-header{display:flex; gap:14px; align-items:center; margin-bottom:16px;}
+  .detail-avatar{width:60px;height:60px;border-radius:16px; display:flex;align-items:center;justify-content:center; font-size:22px; color:#fff; font-weight:800; flex-shrink:0; overflow:hidden;}
+  .detail-avatar img{width:100%; height:100%; object-fit:cover;}
+  .cert-tag{display:inline-block; background:var(--care-bg); color:var(--care); font-size:10.5px; font-weight:800; padding:5px 10px; border-radius:10px; margin:0 6px 6px 0;}
+
+  .pts-banner{ background:var(--recycle-bg); border:1.5px solid var(--recycle); border-radius:16px; padding:14px 16px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; }
+  .pts-banner .ptxt{color:var(--recycle); font-weight:800; font-size:14px;}
+  .voucher-card{ display:flex; justify-content:space-between; align-items:center; border:1.5px solid var(--line); border-radius:16px; padding:14px 16px; margin-bottom:12px; }
+  .voucher-card .vname{font-weight:800; font-size:13.5px; color:var(--ink);}
+  .voucher-card .vcost{font-size:11.5px; color:var(--sub); font-weight:700; margin-top:2px;}
+
+  .toggle-pill{ display:flex; background:var(--bg); border-radius:14px; padding:4px; margin-bottom:10px; }
+  .toggle-pill .opt{ flex:1; text-align:center; padding:9px 0; border-radius:11px; font-size:13px; font-weight:800; cursor:pointer; color:var(--sub); }
+  .toggle-pill .opt.on{background:#fff; color:var(--ink); box-shadow:0 2px 6px rgba(0,0,0,.08);}
+
+  .service-pick{display:flex; align-items:center; gap:14px; border:1.5px solid var(--line); border-radius:18px; padding:16px; margin-bottom:12px; cursor:pointer;}
+  .service-pick .sicon{width:46px;height:46px;border-radius:14px; display:flex;align-items:center;justify-content:center; font-size:20px; flex-shrink:0;}
+
+  .dropoff-card{display:flex; gap:12px; align-items:flex-start; border:1.5px solid var(--line); border-radius:16px; padding:12px 14px; margin-bottom:10px;}
+  .dropoff-card .dicon{width:38px;height:38px;border-radius:11px; background:var(--recycle-bg); color:var(--recycle); display:flex;align-items:center;justify-content:center; font-size:16px; flex-shrink:0;}
+  .dropoff-card .dname{font-weight:800; font-size:13px; color:var(--ink);}
+  .dropoff-card .daddr{font-size:11.5px; color:var(--sub); font-weight:700; margin-top:2px;}
+  .dropoff-card .ddist{font-size:11px; color:var(--recycle); font-weight:800; margin-top:4px;}
+
+  .camera-box{ border:2px dashed var(--line); border-radius:16px; padding:24px; text-align:center; cursor:pointer; margin:12px 0; }
+  .camera-box .cicon{font-size:30px; margin-bottom:8px;}
+  .camera-box .ctext{font-size:12.5px; font-weight:800; color:var(--sub);}
+  .camera-box.done{border-color:var(--recycle); background:var(--recycle-bg);}
+  .camera-box.done .ctext{color:var(--recycle);}
+
+  .tabpill{display:flex; gap:8px; padding:0 20px 14px 20px;}
+  .tabpill .topt{flex:1; text-align:center; padding:9px 0; border-radius:14px; font-size:12.5px; font-weight:800; cursor:pointer; background:var(--bg); color:var(--sub);}
+  .tabpill .topt.on{background:var(--navy); color:#fff;}
+
+  .booking-card{background:#fff; border:1.5px solid var(--line); border-radius:18px; padding:16px; margin-bottom:14px;}
+  .booking-card .btop{display:flex; justify-content:space-between; align-items:flex-start;}
+  .booking-card .bicon{width:40px;height:40px;border-radius:12px; display:flex;align-items:center;justify-content:center; font-size:18px; margin-right:10px;}
+  .booking-card .bname{font-weight:800; font-size:13.5px; color:var(--ink);}
+  .booking-card .bprovider{font-size:11.5px; color:var(--sub); font-weight:700;}
+  .booking-status{font-size:10.5px; font-weight:800; padding:4px 10px; border-radius:20px;}
+  .booking-meta{display:flex; gap:16px; margin:12px 0; font-size:12px; color:var(--sub); font-weight:700;}
+  .booking-price{font-weight:900; font-size:14px; color:var(--ink);}
+  .booking-actions{display:flex; gap:10px; align-items:center; margin-top:8px;}
+  .booking-id{font-size:10.5px; color:var(--sub); font-weight:700;}
+  .star-picker{display:flex; gap:8px; justify-content:center; font-size:34px; margin:12px 0 20px 0;}
+  .star-picker span{cursor:pointer; color:var(--line);}
+  .star-picker span.filled{color:#F2B705;}
+
+  .auth-logo{width:78px;height:78px;border-radius:24px; background:#fff; display:flex;align-items:center;justify-content:center; font-size:34px; margin:0 auto 16px auto;}
+  .welcome-wrap{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;}
+  .welcome-wrap h1{color:#fff; font-size:26px; margin:0 0 6px 0;}
+  .welcome-wrap p{color:rgba(255,255,255,.85); font-weight:700; font-size:13px; margin:0 0 34px 0;}
+  .auth-actions{width:100%; display:flex; flex-direction:column; gap:12px;}
+  .notif-card{display:flex; gap:12px; border:1.5px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px;}
+  .notif-card .nicon{width:36px;height:36px;border-radius:11px; display:flex;align-items:center;justify-content:center; font-size:15px; flex-shrink:0;}
+  .notif-card .ntitle{font-weight:800; font-size:12.5px; color:var(--ink);}
+  .notif-card .ndesc{font-size:11.5px; color:var(--sub); font-weight:700; margin-top:2px;}
+  .notif-card .ntime{font-size:10px; color:var(--sub); font-weight:700; margin-top:4px;}
+  .addr-card{border:1.5px solid var(--line); border-radius:16px; padding:14px; margin-bottom:10px; cursor:pointer; position:relative;}
+  .addr-card.active{border-color:var(--navy); background:#F1F1FA;}
+  .addr-card .alabel{font-weight:800; font-size:13px; color:var(--ink); display:flex; align-items:center; gap:6px;}
+  .addr-card .atext{font-size:12px; color:var(--sub); font-weight:700; margin-top:4px;}
+  .addr-card .activetag{font-size:9.5px; font-weight:800; color:#fff; background:var(--navy); padding:2px 8px; border-radius:20px;}
+
+  .chat-bubble-row{display:flex; margin-bottom:12px;}
+  .chat-bubble-row.user{justify-content:flex-end;}
+  .chat-bubble{max-width:75%; padding:10px 13px; border-radius:16px; font-size:13px; font-weight:700; line-height:1.4;}
+  .chat-bubble-row.bot .chat-bubble{background:#F1F1F5; color:var(--ink); border-bottom-left-radius:4px;}
+  .chat-bubble-row.user .chat-bubble{background:var(--navy); color:#fff; border-bottom-right-radius:4px;}
+  .chat-time{font-size:9.5px; color:var(--sub); font-weight:700; margin-top:3px;}
+  .chat-bubble-row.user .chat-time{text-align:right;}
+  .chat-input-row{display:flex; align-items:center; gap:8px; padding:10px 14px; border-top:1.5px solid var(--line); background:#fff;}
+  .chat-input-row input{flex:1; padding:11px 14px; border-radius:20px; border:1.5px solid var(--line); font-family:'Nunito'; font-size:13px; font-weight:700; color:var(--ink); background:#F7F7FA;}
+  .chat-send-btn{width:40px; height:40px; border-radius:50%; border:none; background:var(--navy); color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .chat-thread-card{display:flex; align-items:center; gap:12px; padding:12px 4px; border-bottom:1px solid var(--line); cursor:pointer;}
+  .chat-thread-card:last-child{border-bottom:none;}
+  .chat-thread-icon{width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0;}
+  .chat-thread-info{flex:1; min-width:0;}
+  .chat-thread-name{font-weight:800; font-size:13.5px; color:var(--ink); display:flex; align-items:center; gap:6px;}
+  .chat-thread-tag{font-size:9px; font-weight:800; color:var(--navy); background:#EDEDFB; padding:2px 7px; border-radius:20px;}
+  .chat-thread-preview{font-size:12px; color:var(--sub); font-weight:600; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .chat-thread-time{font-size:10.5px; color:var(--sub); font-weight:700; flex-shrink:0;}
+
+  /* ---------------- REAL MOBILE BROWSER LAYOUT ---------------- */
+  @media (max-width: 480px){
+    body{
+      padding:0; align-items:stretch; justify-content:stretch; background:var(--bg);
+      min-height:100dvh;
+    }
+    .phone{
+      width:100vw; height:100dvh; min-height:100dvh; border-radius:0; padding:0;
+      box-shadow:none; margin:0;
+    }
+    .notch{display:none;}
+    .screen-wrap{width:100%; height:100%; border-radius:0;}
+    .statusbar{display:none;}
+    .screen{height:100%;}
+    .header{padding-top:calc(18px + env(safe-area-inset-top));}
+    .home-header{padding-top:calc(26px + env(safe-area-inset-top));}
+    .bottomnav{padding-bottom:env(safe-area-inset-bottom); height:calc(74px + env(safe-area-inset-bottom));}
+    .welcome-wrap{padding-top:calc(30px + env(safe-area-inset-top));}
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="screen-wrap">
+
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="icons"><span>••••</span><span>Wi‑Fi</span><span>🔋</span></div>
+    </div>
+
+    <!-- ============ WELCOME / AUTH ============ -->
+    <div class="screen active" id="welcome">
+      <div class="content" style="padding:0;">
+        <div class="welcome-wrap">
+  <div class="auth-logo">🏡</div>
+  <h1 style="color:#000000;">Welcome to HomeHub</h1>
+  <p style="color:#000000;">All your household services, one tap away</p>
+  <div class="auth-actions">
+    <button class="btn" style="background:var(--recycle);" onclick="openAuth('login','welcome')">Log In</button>
+    <button class="btn" style="background:#fff; color:var(--navy);" onclick="openAuth('register','welcome')">Sign Up</button>
+    <button class="btn ghost" onclick="continueGuest()">Continue as Guest</button>
+  </div>
+</div>
+      </div>
+    </div>
+
+    <div class="screen" id="login">
+      <div class="header" style="background:var(--navy);">
+        <div class="toprow"><button class="back" onclick="authBack()">←</button></div>
+        <h2>Log In</h2>
+        <p>Welcome back to HomeHub</p>
+      </div>
+      <div class="content">
+        <div class="card">
+          <label class="flabel">Email</label>
+          <input type="email" id="loginEmail" placeholder="alex@email.com">
+          <label class="flabel">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••">
+        </div>
+        <button class="btn" style="background:var(--navy);" onclick="doLogin()">Log In</button>
+        <p style="text-align:center; font-size:12px; font-weight:700; color:var(--sub); margin-top:14px;">Don't have an account? <span style="color:var(--navy); cursor:pointer;" onclick="openAuth('register', authReturn)">Sign Up</span></p>
+      </div>
+    </div>
+
+    <div class="screen" id="register">
+      <div class="header" style="background:var(--navy);">
+        <div class="toprow"><button class="back" onclick="authBack()">←</button></div>
+        <h2>Create Account</h2>
+        <p>Join HomeHub in seconds</p>
+      </div>
+      <div class="content">
+        <div class="card">
+          <label class="flabel">Full name</label>
+          <input type="text" id="regName" placeholder="Alex Wong">
+          <label class="flabel">Email</label>
+          <input type="email" id="regEmail" placeholder="alex@email.com">
+          <label class="flabel">Password</label>
+          <input type="password" id="regPassword" placeholder="••••••••">
+        </div>
+        <button class="btn" style="background:var(--navy);" onclick="doRegister()">Sign Up</button>
+        <p style="text-align:center; font-size:12px; font-weight:700; color:var(--sub); margin-top:14px;">Already have an account? <span style="color:var(--navy); cursor:pointer;" onclick="openAuth('login', authReturn)">Log In</span></p>
+      </div>
+    </div>
+
+    <!-- ============ HOME ============ -->
+    <div class="screen" id="home">
+      <div class="content" style="padding-top:0;">
+        <div class="home-header">
+          <div class="greeting"><h1 id="homeGreeting">Hi, Alex 👋</h1><span>Let's sort your household today</span></div>
+          <div class="avatar" id="homeAvatar">A</div>
+        </div>
+        <div class="search">🔍 Search services...</div>
+
+        <div class="quickcats">
+          <div class="quickcat" onclick="nav('repair')"><div class="qicon" style="background:var(--repair-bg); color:var(--repair);">🔧</div><span>Repair</span></div>
+          <div class="quickcat" onclick="nav('gas')"><div class="qicon" style="background:var(--gas-bg); color:var(--gas);">🔥</div><span>Gas</span></div>
+          <div class="quickcat" onclick="nav('care')"><div class="qicon" style="background:var(--care-bg); color:var(--care);">❤️</div><span>Care</span></div>
+          <div class="quickcat" onclick="nav('recycle')"><div class="qicon" style="background:var(--recycle-bg); color:var(--recycle);">♻️</div><span>Recycle</span></div>
+          <div class="quickcat" onclick="nav('pet')"><div class="qicon" style="background:var(--pet-bg); color:var(--pet);">🐾</div><span>Pet</span></div>
+        </div>
+
+        <div class="promo-card">
+          <div class="tag">🏷️ Special Offer</div>
+          <h3>20% Off In-Home Care!</h3>
+          <p>First-time users only · Code: CARE20</p>
+          <button onclick="nav('care')">Book Now</button>
+        </div>
+
+        <div class="spend-card" onclick="nav('expense')">
+          <div><div class="lbl">This month's spend</div><div class="amt" id="homeSpend">RM 0.00</div></div>
+          <div class="arrow">›</div>
+        </div>
+
+        <div class="section-title">Your Services</div>
+        <div class="grid">
+          <div class="app-tile" onclick="nav('repair')"><div class="icon" style="background:var(--repair-bg); color:var(--repair);">🔧</div><div class="name">Repair</div><div class="desc">Appliance, furniture & service</div></div>
+          <div class="app-tile" onclick="nav('gas')"><div class="icon" style="background:var(--gas-bg); color:var(--gas);">🔥</div><div class="name">Gas Delivery</div><div class="desc">Same-day doorstep swap</div></div>
+          <div class="app-tile" onclick="nav('care')">
+  <div class="icon" style="background:var(--care-bg); color:var(--care);">❤️</div>
+  <div class="name">In-Home Care</div>
+  <div class="desc">Elderly & child care</div></div>
+          <div class="app-tile" onclick="nav('recycle')"><div class="icon" style="background:var(--recycle-bg); color:var(--recycle);">♻️</div><div class="name">Recycling</div><div class="desc">Pickup, drop-off & rewards</div></div>
+          <div class="app-tile" onclick="nav('pet')"><div class="icon" style="background:var(--pet-bg); color:var(--pet);">🐾</div><div class="name">Pet Care</div><div class="desc">Walk, groom & feed</div></div>
+          <div class="app-tile" onclick="nav('expense')"><div class="icon" style="background:var(--expense-bg); color:var(--expense);">💰</div><div class="name">Expenses</div><div class="desc">Monthly summary</div></div>
+        </div>
+
+        <div class="section-title">Popular Services <span class="link" onclick="nav('services')">See All</span></div>
+        <div class="popular-row">
+          <div class="popular-card" onclick="nav('gas')"><div class="picon" style="background:var(--gas-bg); color:var(--gas);">🔥</div><div class="pname">Gas Delivery</div><div class="pfrom">From RM 35</div><div class="prate">★ 4.9 (521)</div></div>
+          <div class="popular-card" onclick="nav('care')"><div class="picon" style="background:var(--care-bg); color:var(--care);">❤️</div><div class="pname">In-Home Care</div><div class="pfrom">From RM 30/hr</div><div class="prate">★ 4.8 (312)</div></div>
+          <div class="popular-card" onclick="openRepairCategory('service')"><div class="picon" style="background:var(--repair-bg); color:var(--repair);">💨</div><div class="pname">AC Service</div><div class="pfrom">From RM 70</div><div class="prate">★ 4.9 (234)</div></div>
+        </div>
+      </div>
+      <div class="bottomnav">
+        <button class="navbtn active" onclick="nav('home')"><span class="navicon">🏠</span>Home</button>
+        <button class="navbtn" onclick="nav('services')"><span class="navicon">▦</span>Services</button>
+        <button class="navbtn" onclick="openBookings()"><span class="navicon">📅</span>Bookings</button>
+        <button class="navbtn" onclick="openChat()"><span class="navicon">💬</span>Chat</button>
+        <button class="navbtn" onclick="nav('profile')"><span class="navicon">👤</span>Profile</button>
+      </div>
+    </div>
+
+    <!-- ============ SERVICES (all) ============ -->
+    <div class="screen" id="services">
+      <div class="header" style="background:var(--navy);">
+        <h2>All Services</h2>
+        <p>Everything HomeHub offers</p>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <div class="app-tile" onclick="nav('repair')"><div class="icon" style="background:var(--repair-bg); color:var(--repair);">🔧</div><div class="name">Repair</div><div class="desc">Appliance, furniture & service</div></div>
+          <div class="app-tile" onclick="nav('gas')"><div class="icon" style="background:var(--gas-bg); color:var(--gas);">🔥</div><div class="name">Gas Delivery</div><div class="desc">Same-day doorstep swap</div></div>
+          <div class="app-tile" onclick="nav('care')"><div class="icon" style="background:var(--care-bg); color:var(--care);">❤️</div><div class="name">In-Home Care</div><div class="desc">Elderly & child care</div></div>
+          <div class="app-tile" onclick="nav('recycle')"><div class="icon" style="background:var(--recycle-bg); color:var(--recycle);">♻️</div><div class="name">Recycling</div><div class="desc">Pickup, drop-off & rewards</div></div>
+          <div class="app-tile" onclick="nav('pet')"><div class="icon" style="background:var(--pet-bg); color:var(--pet);">🐾</div><div class="name">Pet Care</div><div class="desc">Walk, groom & feed</div></div>
+          <div class="app-tile" onclick="nav('expense')"><div class="icon" style="background:var(--expense-bg); color:var(--expense);">💰</div><div class="name">Expenses</div><div class="desc">Monthly summary</div></div>
+        </div>
+      </div>
+      <div class="bottomnav">
+        <button class="navbtn" onclick="nav('home')"><span class="navicon">🏠</span>Home</button>
+        <button class="navbtn active" onclick="nav('services')"><span class="navicon">▦</span>Services</button>
+        <button class="navbtn" onclick="openBookings()"><span class="navicon">📅</span>Bookings</button>
+        <button class="navbtn" onclick="openChat()"><span class="navicon">💬</span>Chat</button>
+        <button class="navbtn" onclick="nav('profile')"><span class="navicon">👤</span>Profile</button>
+      </div>
+    </div>
+
+    <!-- ============ REPAIR (category select) ============ -->
+    <div class="screen" id="repair">
+      <div class="header" style="background:var(--repair);">
+        <div class="toprow"><button class="back" onclick="nav('home')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box">🔧</div>
+          <div><h2>Repair Services</h2><p>Fix it, or keep it running well</p></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="card">
+          <h3>🔌 Appliance Repair</h3>
+          <p class="desc">Fridge, washing machine, aircon & more.</p>
+          <button class="btn" style="background:var(--repair);" onclick="openRepairCategory('appliance')">See Technicians</button>
+        </div>
+        <div class="card">
+          <h3>🛋️ Furniture Repair</h3>
+          <p class="desc">Loose joints, fabric tears, cabinet fixes.</p>
+          <button class="btn" style="background:var(--repair);" onclick="openRepairCategory('furniture')">See Technicians</button>
+        </div>
+        <div class="card">
+          <h3>💨 Service / Maintenance</h3>
+          <p class="desc">Routine servicing for any appliance or furniture — no fault needed, just upkeep.</p>
+          <button class="btn" style="background:var(--repair);" onclick="openRepairCategory('service')">See Providers</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ REPAIR TECHNICIAN LIST ============ -->
+    <div class="screen" id="repair-tech">
+      <div class="header" style="background:var(--repair);">
+        <div class="toprow"><button class="back" onclick="nav('repair')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box" id="techIconBox">🔧</div>
+          <div><h2 id="techTitle">Choose a Technician</h2><p>Compare rating, price & arrival time</p></div>
+        </div>
+      </div>
+      <div class="content">
+        <div id="techList"></div>
+        <div class="card">
+          <h3>📅 Choose date & time</h3>
+          <input type="date" id="repair-date">
+          <div class="time-select-row">
+            <select id="repair-time-hour"></select>
+            <span class="time-colon">:</span>
+            <select id="repair-time-min"></select>
+            <div class="ampm-row">
+              <div class="chip on" id="repair-time-am" onclick="setPeriod('repair','AM')">AM</div>
+              <div class="chip" id="repair-time-pm" onclick="setPeriod('repair','PM')">PM</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn" id="techConfirmBtn" style="background:var(--repair); margin-top:8px;" disabled onclick="confirmRepairBooking()">Select a technician</button>
+      </div>
+    </div>
+
+    <!-- ============ GAS DELIVERY ============ -->
+    <div class="screen" id="gas">
+      <div class="header" style="background:var(--gas);">
+        <div class="toprow"><button class="back" onclick="nav('home')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box">🔥</div>
+          <div><h2>Gas Delivery</h2><p>Fast Delivery · 14kg Petronas & MyGas</p></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="card">
+          <h3>Cylinder size</h3>
+          <div class="chiprow">
+            <div class="chip on" id="gsize-12" onclick="pickGasSize(12)">12kg</div>
+            <div class="chip" id="gsize-14" onclick="pickGasSize(14)">14kg</div>
+            <div class="chip" id="gsize-50" onclick="pickGasSize(50)">50kg (Business)</div>
+          </div>
+        </div>
+        <div id="gasSupplierList"></div>
+        <div class="card">
+          <h3>📅 Choose date & time</h3>
+          <input type="date" id="gas-date">
+          <div class="time-select-row">
+            <select id="gas-time-hour"></select>
+            <span class="time-colon">:</span>
+            <select id="gas-time-min"></select>
+            <div class="ampm-row">
+              <div class="chip on" id="gas-time-am" onclick="setPeriod('gas','AM')">AM</div>
+              <div class="chip" id="gas-time-pm" onclick="setPeriod('gas','PM')">PM</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn" id="gasConfirmBtn" style="background:var(--gas);" disabled onclick="confirmGasBooking()">Select a supplier</button>
+      </div>
+    </div>
+
+    <!-- ============ CARE (list) ============ -->
+    <div class="screen" id="care">
+      <div class="header" style="background:var(--care);">
+        <div class="toprow"><button class="back" onclick="nav('home')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box">❤️</div>
+          <div><h2>In-Home Care</h2><p>Verified caregivers for elderly & kids</p></div>
+        </div>
+      </div>
+      <div class="content" id="careList"></div>
+    </div>
+
+    <!-- ============ CARE DETAIL ============ -->
+    <div class="screen" id="care-detail">
+      <div class="header" style="background:var(--care);">
+        <div class="toprow"><button class="back" onclick="nav('care')">←</button></div>
+        <h2>Caregiver Profile</h2>
+      </div>
+      <div class="content">
+        <div class="card">
+          <div class="detail-header">
+            <div class="detail-avatar" id="cdAvatarWrap"></div>
+            <div>
+              <div style="font-weight:800; font-size:15.5px;" id="cdName"></div>
+              <div class="stars" id="cdStars"></div>
+              <div style="font-size:11.5px; color:var(--sub); font-weight:700;" id="cdExp"></div>
+            </div>
+          </div>
+          <p class="desc" id="cdBio"></p>
+          <div id="cdCerts"></div>
+        </div>
+        <div class="card">
+          <div class="row"><span style="font-weight:800; color:var(--ink);">Session rate</span><span style="font-weight:900;" id="cdRate"></span></div>
+          <p class="field-hint">Standard booking is a 2-hour session.</p>
+        </div>
+        <div class="card">
+          <h3>📅 Choose date & time</h3>
+          <input type="date" id="care-date">
+          <div class="time-select-row">
+            <select id="care-time-hour"></select>
+            <span class="time-colon">:</span>
+            <select id="care-time-min"></select>
+            <div class="ampm-row">
+              <div class="chip on" id="care-time-am" onclick="setPeriod('care','AM')">AM</div>
+              <div class="chip" id="care-time-pm" onclick="setPeriod('care','PM')">PM</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn" style="background:var(--care);" onclick="bookCaregiver()">Book This Caregiver</button>
+      </div>
+    </div>
+
+    <!-- ============ RECYCLE ============ -->
+    <div class="screen" id="recycle">
+      <div class="header" style="background:var(--recycle);">
+        <div class="toprow">
+          <button class="back" onclick="nav('home')">←</button>
+          <button class="iconbtn" onclick="nav('vouchers')">🎁<span class="ptspill" id="ptsPill">0</span></button>
+        </div>
+        <div class="header-icon-row">
+          <div class="header-icon-box">♻️</div>
+          <div><h2>Recycling</h2><p>Schedule a pickup or drop off yourself</p></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="pts-banner">
+          <span class="ptxt">🏆 <span id="ptsBalance">0</span> pts balance</span>
+          <button class="btn small" style="background:var(--recycle);" onclick="nav('vouchers')">Redeem</button>
+        </div>
+
+        <div class="card">
+          <h3>🚚 Schedule a Pickup</h3>
+          <p class="desc">Enter the estimated weight of recyclables. You earn 2 points per kg.</p>
+          <label class="flabel">Weight (kg)</label>
+          <input type="number" id="kgInput" min="0" step="0.5" placeholder="e.g. 3.5" oninput="updateRecyclePreview()">
+          <div class="chiprow" style="margin-top:10px;">
+            <div class="chip on" id="rtype-paper" onclick="toggleChip('paper')">Paper</div>
+            <div class="chip" id="rtype-plastic" onclick="toggleChip('plastic')">Plastic</div>
+            <div class="chip" id="rtype-metal" onclick="toggleChip('metal')">Metal</div>
+            <div class="chip" id="rtype-ewaste" onclick="toggleChip('ewaste')">E-waste</div>
+          </div>
+          <label class="flabel">Collector</label>
+          <div class="chiprow">
+            <div class="chip on" id="rcol-green" onclick="pickCollector('green','GreenCycle Malaysia')">GreenCycle Malaysia</div>
+            <div class="chip" id="rcol-eco" onclick="pickCollector('eco','EcoWaste Collectors')">EcoWaste Collectors</div>
+          </div>
+          <div class="card" style="margin:10px 0 12px 0;">
+            <h3>📅 Choose date & time</h3>
+            <input type="date" id="recycle-date">
+            <div class="time-select-row">
+              <select id="recycle-time-hour"></select>
+              <span class="time-colon">:</span>
+              <select id="recycle-time-min"></select>
+              <div class="ampm-row">
+                <div class="chip on" id="recycle-time-am" onclick="setPeriod('recycle','AM')">AM</div>
+                <div class="chip" id="recycle-time-pm" onclick="setPeriod('recycle','PM')">PM</div>
+              </div>
+            </div>
+          </div>
+          <div class="pts-banner">
+            <span class="ptxt">You'll earn</span>
+            <span class="ptxt" id="ptsPreview">0 pts</span>
+          </div>
+          <button class="btn" style="background:var(--recycle);" onclick="schedulePickup()">Schedule Pickup</button>
+        </div>
+
+        <div class="card">
+          <h3>📍 Drop Off Yourself</h3>
+          <p class="desc">Recommended drop-off points near you:</p>
+          <div class="dropoff-card"><div class="dicon">♻️</div><div><div class="dname">GreenPoint Recycling Hub</div><div class="daddr">Jalan Harmoni 5, Taman Bahagia, Johor Bahru</div><div class="ddist">0.8 km away</div></div></div>
+          <div class="dropoff-card"><div class="dicon">♻️</div><div><div class="dname">EcoCentre Tebrau</div><div class="daddr">Jalan Tebrau, Taman Molek, Johor Bahru</div><div class="ddist">1.4 km away</div></div></div>
+          <div class="dropoff-card"><div class="dicon">♻️</div><div><div class="dname">Community Recycling Bin</div><div class="daddr">Persiaran Utama, Section 3</div><div class="ddist">2.1 km away</div></div></div>
+          <div class="camera-box" id="cameraBox" onclick="toggleCameraProof()">
+            <div class="cicon" id="cameraIcon">📷</div>
+            <div class="ctext" id="cameraText">Tap to add photo proof of drop-off</div>
+          </div>
+          <button class="btn" style="background:var(--recycle);" id="dropoffBtn" disabled onclick="confirmDropoff()">Confirm Drop-off (+10 pts)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ VOUCHERS ============ -->
+    <div class="screen" id="vouchers">
+      <div class="header" style="background:var(--recycle);">
+        <div class="toprow"><button class="back" onclick="nav('recycle')">←</button></div>
+        <h2>Redeem Points</h2>
+        <p><span id="vBalance">0</span> pts available</p>
+      </div>
+      <div class="content" id="voucherList"></div>
+    </div>
+
+    <!-- ============ PET (category select) ============ -->
+    <div class="screen" id="pet">
+      <div class="header" style="background:var(--pet);">
+        <div class="toprow"><button class="back" onclick="nav('home')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box">🐾</div>
+          <div><h2>Pet Care</h2><p>Walking, grooming & home feeding</p></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="service-pick" onclick="openPetCategory('walking')">
+          <div class="sicon" style="background:var(--pet-bg); color:var(--pet);">🚶</div>
+          <div style="flex:1;"><div style="font-weight:800; font-size:14px;">Pet Walking</div><div class="field-hint" style="margin:2px 0 0 0;">Neighborhood walks with live updates</div></div>
+          <span style="color:var(--sub);">›</span>
+        </div>
+        <div class="service-pick" onclick="openPetCategory('grooming')">
+          <div class="sicon" style="background:var(--care-bg); color:var(--care);">✂️</div>
+          <div style="flex:1;"><div style="font-weight:800; font-size:14px;">Grooming</div><div class="field-hint" style="margin:2px 0 0 0;">Bath, trim & nail care at home</div></div>
+          <span style="color:var(--sub);">›</span>
+        </div>
+        <div class="service-pick" onclick="openPetCategory('feeding')">
+          <div class="sicon" style="background:var(--gas-bg); color:var(--gas);">🍽️</div>
+          <div style="flex:1;"><div style="font-weight:800; font-size:14px;">Feeding Service</div><div class="field-hint" style="margin:2px 0 0 0;">For when no one's home</div></div>
+          <span style="color:var(--sub);">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PET FORM ============ -->
+    <div class="screen" id="pet-form">
+      <div class="header" style="background:var(--pet);">
+        <div class="toprow"><button class="back" onclick="nav('pet')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box" id="petIconBox">🐾</div>
+          <div><h2 id="petFormTitle">Pet Walking</h2><p id="petFormSubtitle">Tell us about your pet</p></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="card">
+          <h3>Choose a provider</h3>
+          <div id="petProviderList"></div>
+        </div>
+        <div class="card">
+          <h3 id="petOptionLabel">Choose duration</h3>
+          <div class="chiprow" id="petOptionChips"></div>
+        </div>
+        <div class="card">
+          <h3>Pet details</h3>
+          <div class="toggle-pill">
+            <div class="opt on" id="ptype-dog" onclick="setPetType('dog')">🐶 Dog</div>
+            <div class="opt" id="ptype-cat" onclick="setPetType('cat')">🐱 Cat</div>
+          </div>
+          <label class="flabel">Pet name</label>
+          <input type="text" id="petName" placeholder="e.g. Milo">
+          <label class="flabel">Breed</label>
+          <select id="petBreed"></select>
+          <label class="flabel">Personality (select all that apply)</label>
+          <div class="chiprow" id="petPersonalityChips"></div>
+          <label class="flabel" id="petRemarksLabel">Remarks</label>
+          <textarea id="petRemarks" placeholder="Allergies, medical needs, favorite treats, feeding schedule..."></textarea>
+        </div>
+        <div class="card">
+          <h3>📅 Choose date & time</h3>
+          <input type="date" id="pet-date">
+          <div class="time-select-row">
+            <select id="pet-time-hour"></select>
+            <span class="time-colon">:</span>
+            <select id="pet-time-min"></select>
+            <div class="ampm-row">
+              <div class="chip on" id="pet-time-am" onclick="setPeriod('pet','AM')">AM</div>
+              <div class="chip" id="pet-time-pm" onclick="setPeriod('pet','PM')">PM</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn" style="background:var(--pet);" onclick="confirmPetBooking()">Confirm Booking</button>
+      </div>
+    </div>
+
+    <!-- ============ EXPENSE ============ -->
+    <div class="screen" id="expense">
+      <div class="header" style="background:var(--expense);">
+        <div class="toprow"><button class="back" onclick="nav('home')">←</button></div>
+        <h2>Monthly Summary</h2>
+        <p>Spending updates as you book services</p>
+      </div>
+      <div class="content">
+        <div class="exp-total">
+          <div style="font-size:11.5px; font-weight:800; opacity:.85;">TOTAL SPENT THIS MONTH</div>
+          <div class="big" id="expTotal">RM 0.00</div>
+        </div>
+        <div class="bars" id="expBars"></div>
+        <div class="card" id="expList"></div>
+      </div>
+    </div>
+
+    <!-- ============ BOOKINGS ============ -->
+    <div class="screen" id="bookings">
+      <div class="header" style="background:var(--navy);">
+        <h2 style="margin-top:0;">My Bookings</h2>
+      </div>
+      <div class="tabpill">
+        <div class="topt on" id="btab-upcoming" onclick="setBookingsTab('upcoming')">Upcoming</div>
+        <div class="topt" id="btab-completed" onclick="setBookingsTab('completed')">Completed</div>
+        <div class="topt" id="btab-cancelled" onclick="setBookingsTab('cancelled')">Cancelled</div>
+      </div>
+      <div class="content" id="bookingsList" style="padding-top:0;"></div>
+      <div class="bottomnav">
+        <button class="navbtn" onclick="nav('home')"><span class="navicon">🏠</span>Home</button>
+        <button class="navbtn" onclick="nav('services')"><span class="navicon">▦</span>Services</button>
+        <button class="navbtn active" onclick="openBookings()"><span class="navicon">📅</span>Bookings</button>
+        <button class="navbtn" onclick="openChat()"><span class="navicon">💬</span>Chat</button>
+        <button class="navbtn" onclick="nav('profile')"><span class="navicon">👤</span>Profile</button>
+      </div>
+    </div>
+
+    <!-- ============ CHAT (thread list) ============ -->
+    <div class="screen" id="chat">
+      <div class="header" style="background:var(--navy);">
+        <h2>Chats</h2>
+        <p>Support and your service providers</p>
+      </div>
+      <div class="content" id="chatList"></div>
+      <div class="bottomnav">
+        <button class="navbtn" onclick="nav('home')"><span class="navicon">🏠</span>Home</button>
+        <button class="navbtn" onclick="nav('services')"><span class="navicon">▦</span>Services</button>
+        <button class="navbtn" onclick="openBookings()"><span class="navicon">📅</span>Bookings</button>
+        <button class="navbtn active" onclick="openChat()"><span class="navicon">💬</span>Chat</button>
+        <button class="navbtn" onclick="nav('profile')"><span class="navicon">👤</span>Profile</button>
+      </div>
+    </div>
+
+    <!-- ============ CHAT THREAD (conversation) ============ -->
+    <div class="screen" id="chatThread">
+      <div class="header" style="background:var(--navy);">
+        <div class="toprow"><button class="back" onclick="openChat()">←</button></div>
+        <h2 id="chatThreadName">Chat</h2>
+      </div>
+      <div class="content" id="chatMessages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter'){ sendChatMessage(); }">
+        <button class="chat-send-btn" onclick="sendChatMessage()">➤</button>
+      </div>
+    </div>
+
+    <!-- ============ RATE SERVICE ============ -->
+    <div class="screen" id="rate">
+      <div class="header" style="background:var(--navy);">
+        <div class="toprow"><button class="back" onclick="nav('bookings')">←</button></div>
+        <h2>Rate Your Service</h2>
+        <p id="rateServiceName">Service</p>
+      </div>
+      <div class="content">
+        <p style="text-align:center; font-weight:800; color:var(--ink); margin-top:10px;">How was your experience?</p>
+        <div class="star-picker" id="starPicker">
+          <span onclick="setStar(1)">★</span><span onclick="setStar(2)">★</span><span onclick="setStar(3)">★</span><span onclick="setStar(4)">★</span><span onclick="setStar(5)">★</span>
+        </div>
+        <label class="flabel">Comments (optional)</label>
+        <textarea id="rateComment" placeholder="Tell us more about your experience..."></textarea>
+        <button class="btn" style="background:var(--navy); margin-top:14px;" onclick="submitRating()">Submit Rating</button>
+      </div>
+    </div>
+
+    <!-- ============ PROFILE ============ -->
+    <div class="screen" id="profile">
+      <div class="header" style="background:var(--navy);">
+        <h2>My Profile</h2>
+        <p>Manage your HomeHub account</p>
+      </div>
+      <div class="content" id="profileContent"></div>
+      <div class="bottomnav">
+        <button class="navbtn" onclick="nav('home')"><span class="navicon">🏠</span>Home</button>
+        <button class="navbtn" onclick="nav('services')"><span class="navicon">▦</span>Services</button>
+        <button class="navbtn" onclick="openBookings()"><span class="navicon">📅</span>Bookings</button>
+        <button class="navbtn" onclick="openChat()"><span class="navicon">💬</span>Chat</button>
+        <button class="navbtn active" onclick="nav('profile')"><span class="navicon">👤</span>Profile</button>
+      </div>
+    </div>
+
+    <!-- ============ ADDRESSES ============ -->
+    <div class="screen" id="addresses">
+      <div class="header" style="background:var(--navy);">
+        <div class="toprow"><button class="back" onclick="nav('profile')">←</button></div>
+        <h2>Saved Addresses</h2>
+      </div>
+      <div class="content">
+        <div id="addrList"></div>
+        <div class="card">
+          <h3>Add New Address</h3>
+          <label class="flabel">Label</label>
+          <input type="text" id="newAddrLabel" placeholder="e.g. Home, Office">
+          <label class="flabel">Address</label>
+          <textarea id="newAddrText" placeholder="Full address..."></textarea>
+          <button class="btn" style="background:var(--navy); margin-top:12px;" onclick="addAddress()">Save Address</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ NOTIFICATIONS ============ -->
+    <div class="screen" id="notifications">
+      <div class="header" style="background:var(--navy);">
+        <div class="toprow"><button class="back" onclick="nav('profile')">←</button></div>
+        <h2>Notifications</h2>
+      </div>
+      <div class="content">
+        <div class="notif-card"><div class="nicon" style="background:var(--gas-bg); color:var(--gas);">🔥</div><div><div class="ntitle">GasExpress Delivery is on the way</div><div class="ndesc">Your 14kg cylinder will arrive within 30 minutes.</div><div class="ntime">10 min ago</div></div></div>
+        <div class="notif-card"><div class="nicon" style="background:var(--repair-bg); color:var(--repair);">💨</div><div><div class="ntitle">Air Conditioner Service confirmed</div><div class="ndesc">CoolBreeze AC Services will visit on 28 Jul, 10:00 AM.</div><div class="ntime">2 hr ago</div></div></div>
+        <div class="notif-card"><div class="nicon" style="background:var(--care-bg); color:var(--care);">❤️</div><div><div class="ntitle">Rate your completed session</div><div class="ndesc">Let us know how Siti Maria did during your last care session.</div><div class="ntime">1 day ago</div></div></div>
+        <div class="notif-card"><div class="nicon" style="background:var(--repair-bg); color:var(--repair);">🏷️</div><div><div class="ntitle">20% Off In-Home Care</div><div class="ndesc">Use code CARE20 on your first booking this week.</div><div class="ntime">2 days ago</div></div></div>
+        <div class="notif-card"><div class="nicon" style="background:var(--recycle-bg); color:var(--recycle);">♻️</div><div><div class="ntitle">You earned 12 recycling points</div><div class="ndesc">Redeem them for vouchers anytime.</div><div class="ntime">3 days ago</div></div></div>
+      </div>
+    </div>
+
+    <!-- ============ SETTINGS ============ -->
+    <div class="screen" id="settings">
+      <div class="header" style="background:var(--navy);">
+        <div class="toprow"><button class="back" onclick="nav('profile')">←</button></div>
+        <h2>App Settings</h2>
+      </div>
+      <div class="content">
+        <div class="card">
+          <h3>🌐 Language</h3>
+          <div class="chiprow">
+            <div class="chip on" id="lang-en" onclick="pickSetting('lang','en')">English</div>
+            <div class="chip" id="lang-ms" onclick="pickSetting('lang','ms')">Bahasa Melayu</div>
+            <div class="chip" id="lang-zh" onclick="pickSetting('lang','zh')">中文</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>🎨 Theme</h3>
+          <div class="chiprow">
+            <div class="chip on" id="theme-light" onclick="pickSetting('theme','light')">Light</div>
+            <div class="chip" id="theme-dark" onclick="pickSetting('theme','dark')">Dark</div>
+            <div class="chip" id="theme-auto" onclick="pickSetting('theme','auto')">Auto</div>
+          </div>
+        </div>
+        <p class="field-hint" style="text-align:center;">Display settings only — for prototype demo purposes.</p>
+      </div>
+    </div>
+
+    <!-- ============ CONFIRMATION ============ -->
+    <div class="screen" id="confirm">
+      <div class="content" style="padding:0;">
+        <div class="confirm-wrap">
+          <div class="check-circle" id="confirmIcon">✓</div>
+          <h2 id="confirmTitle">Booking Confirmed!</h2>
+          <p id="confirmSub">We've notified your service provider.</p>
+          <div class="confirm-card" id="confirmRows"></div>
+          <button class="btn" style="background:var(--navy);" onclick="nav('home')">Back to Home</button>
+          <button class="btn ghost" onclick="openBookings()">View My Bookings</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ---------------- GLOBAL STATE (in-memory only, resets on reload) ---------------- */
+const state = {
+  user: null,
+  expenses: 0,
+  points: 0,
+  byCategory: { repair:0, gas:0, care:0, recycle:0, pet:0 },
+  bookings: [],
+  addresses: [ {label:'Home', text:'27, Jalan Harmoni 5, Taman Bahagia, 81100 Johor Bahru, Johor'} ],
+  activeAddressIndex: 0,
+  chatThreads: [
+    { id:'support', name:'HomeHub Support', icon:'🤖', role:'bot',
+      messages:[ { from:'them', text:'Hi there! 👋 I\'m the HomeHub support assistant. How can I help you today?', time:'9:00 AM' } ] }
+  ]
+};
+function getActiveAddress(){
+  return state.addresses[state.activeAddressIndex] || state.addresses[0];
+}
+const catLabel = { repair:'Repair', gas:'Gas Delivery', care:'Home Care', recycle:'Recycling', pet:'Pet Care' };
+const catColor = { repair:'var(--repair)', gas:'var(--gas)', care:'var(--care)', recycle:'var(--recycle)', pet:'var(--pet)' };
+const catBg = { repair:'var(--repair-bg)', gas:'var(--gas-bg)', care:'var(--care-bg)', recycle:'var(--recycle-bg)', pet:'var(--pet-bg)' };
+let authReturn = 'welcome';
+
+function nav(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const content = document.getElementById(id).querySelector('.content');
+  if(content) content.scrollTop = 0;
+}
+
+function fmt(n){ return 'RM ' + n.toFixed(2); }
+function todayISO(){ const d = new Date(); return d.toISOString().split('T')[0]; }
+function makeBookingId(){ return 'HH-2026-' + String(Math.floor(1000 + Math.random()*9000)); }
+
+/* ---------------- AUTH ---------------- */
+function openAuth(screen, returnTo){ authReturn = returnTo || 'welcome'; nav(screen); }
+function authBack(){ nav(authReturn); }
+function continueGuest(){ state.user = null; nav('home'); renderProfile(); }
+
+function doLogin(){
+  const email = document.getElementById('loginEmail').value.trim() || 'alex@email.com';
+  const namePart = email.split('@')[0];
+  const name = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+  state.user = { name: name, email: email };
+  renderProfile();
+  nav(authReturn === 'profile' ? 'profile' : 'home');
+}
+function doRegister(){
+  const name = document.getElementById('regName').value.trim() || 'Alex Wong';
+  const email = document.getElementById('regEmail').value.trim() || 'alex@email.com';
+  state.user = { name: name, email: email };
+  renderProfile();
+  nav(authReturn === 'profile' ? 'profile' : 'home');
+}
+function logout(){ state.user = null; renderProfile(); }
+
+/* ---------------- HOME / EXPENSE ---------------- */
+function refreshHome(){
+  document.getElementById('homeSpend').innerText = fmt(state.expenses);
+  const g = document.getElementById('homeGreeting');
+  const a = document.getElementById('homeAvatar');
+  if(state.user){
+    g.innerText = 'Hi, ' + state.user.name.split(' ')[0] + ' 👋';
+    a.innerText = state.user.name.charAt(0).toUpperCase();
+  } else {
+    g.innerText = 'Hi, Guest 👋';
+    a.innerText = 'G';
+  }
+}
+
+function refreshExpenseScreen(){
+  document.getElementById('expTotal').innerText = fmt(state.expenses);
+  const cats = Object.keys(state.byCategory);
+  const barsEl = document.getElementById('expBars');
+  barsEl.innerHTML = cats.map(c => {
+    const val = state.byCategory[c];
+    const h = val > 0 ? 78 : 14;
+    return '<div class="bar-col"><div class="bar" style="height:' + h + '%; background:' + (val>0?catColor[c]:'var(--line)') + ';"></div><div class="blabel">' + catLabel[c] + '</div></div>';
+  }).join('');
+  const listEl = document.getElementById('expList');
+  const anySpend = cats.some(c => state.byCategory[c] > 0);
+  if(!anySpend){
+    listEl.innerHTML = '<div class="empty-note">No expenses yet — book a service to see it here.</div>';
+  } else {
+    listEl.innerHTML = cats.filter(c => state.byCategory[c] > 0).map(c =>
+      '<div class="exp-row"><div class="l"><span class="dot" style="background:' + catColor[c] + ';"></span>' + catLabel[c] + '</div><div class="amt">' + fmt(state.byCategory[c]) + '</div></div>'
+    ).join('');
+  }
+}
+
+function refreshPoints(){
+  document.getElementById('ptsPill').innerText = state.points;
+  document.getElementById('ptsBalance').innerText = state.points;
+  document.getElementById('vBalance').innerText = state.points;
+  renderVouchers();
+}
+
+/* ---------------- DATE / TIME PICKER ---------------- */
+const timePrefixes = ['repair','gas','care','recycle','pet'];
+const selectedPeriod = {};
+function setPeriod(prefix, period){
+  selectedPeriod[prefix] = period;
+  const am = document.getElementById(prefix + '-time-am');
+  const pm = document.getElementById(prefix + '-time-pm');
+  if(am) am.classList.toggle('on', period === 'AM');
+  if(pm) pm.classList.toggle('on', period === 'PM');
+}
+function buildTimeSelects(){
+  timePrefixes.forEach(p => {
+    const hourSel = document.getElementById(p + '-time-hour');
+    const minSel = document.getElementById(p + '-time-min');
+    if(!hourSel || !minSel) return;
+    hourSel.innerHTML = Array.from({length:12}, (_, i) => i + 1)
+      .map(h => '<option value="' + h + '">' + h + '</option>').join('');
+    minSel.innerHTML = ['00','15','30','45']
+      .map(m => '<option value="' + m + '">' + m + '</option>').join('');
+    hourSel.value = '10';
+    minSel.value = '00';
+    selectedPeriod[p] = 'AM';
+  });
+}
+function getDateTimeLabel(prefix){
+  const dateEl = document.getElementById(prefix + '-date');
+  const dateVal = (dateEl && dateEl.value) ? dateEl.value : todayISO();
+  const hourSel = document.getElementById(prefix + '-time-hour');
+  const minSel = document.getElementById(prefix + '-time-min');
+  const hour = hourSel ? hourSel.value : '10';
+  const min = minSel ? minSel.value : '00';
+  const period = selectedPeriod[prefix] || 'AM';
+  const slotLabel = hour + ':' + min + ' ' + period;
+  const d = new Date(dateVal + 'T00:00:00');
+  const dateLabel = d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  return { dateLabel: dateLabel, slotLabel: slotLabel };
+}
+function initDateInputs(){
+  ['repair-date','gas-date','care-date','pet-date','recycle-date'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = todayISO();
+  });
+  buildTimeSelects();
+}
+
+/* ---------------- BOOKING / CONFIRM ---------------- */
+function bookService(category, title, price, rows, opts){
+  opts = opts || {};
+  state.expenses += price;
+  state.byCategory[category] += price;
+  if(opts.pointsEarned){ state.points += opts.pointsEarned; }
+  refreshHome();
+  refreshExpenseScreen();
+  refreshPoints();
+
+  const id = makeBookingId();
+  const addr = getActiveAddress();
+  if(opts.addBooking !== false){
+    state.bookings.unshift({
+      id: id, title: title, category: category, provider: opts.provider || '',
+      date: opts.dateLabel || '', time: opts.timeLabel || '',
+      address: opts.skipAddress ? '' : addr.text,
+      price: price, status: 'upcoming', rating: 0
+    });
+  }
+  if(opts.provider && !opts.skipAddress){ ensureProviderThread(category, opts.provider); }
+  const allRows = rows.slice();
+  if(!opts.skipAddress){ allRows.push({label:'Address', value:addr.text}); }
+  allRows.push({label:'Booking ID', value:id});
+  showConfirm(title, price, allRows);
+}
+
+function showConfirm(title, price, rows){
+  document.getElementById('confirmTitle').innerText = price > 0 ? 'Booking Confirmed!' : 'Request Submitted!';
+  document.getElementById('confirmSub').innerText = price > 0 ? "We've notified your service provider." : "We'll be in touch shortly.";
+  document.getElementById('confirmRows').innerHTML = rows.map(r => '<div class="r"><span>' + r.label + '</span><span>' + r.value + '</span></div>').join('');
+  nav('confirm');
+}
+
+/* ---------------- REPAIR ---------------- */
+const techData = {
+  appliance: [
+    {id:'a1', name:'QuickFix Co.', rating:4.8, price:45, eta:'45 min', img:'https://i.pravatar.cc/100?img=12'},
+    {id:'a2', name:'HomeTech Services', rating:4.6, price:38, eta:'1 hr', img:'https://i.pravatar.cc/100?img=33'},
+    {id:'a3', name:'FixIt Pro', rating:4.9, price:52, eta:'30 min', img:'https://i.pravatar.cc/100?img=45'},
+    {id:'a4', name:'ApplianceCare Malaysia', rating:4.7, price:41, eta:'50 min', img:'https://i.pravatar.cc/100?img=51'}
+  ],
+  furniture: [
+    {id:'f1', name:'WoodCraft Repairs', rating:4.7, price:40, eta:'1 hr', img:'https://i.pravatar.cc/100?img=22'},
+    {id:'f2', name:'Furniture Medic', rating:4.9, price:55, eta:'50 min', img:'https://i.pravatar.cc/100?img=8'},
+    {id:'f3', name:'Handy Homes', rating:4.5, price:33, eta:'1.5 hr', img:'https://i.pravatar.cc/100?img=14'},
+    {id:'f4', name:'RestoreIt Furniture', rating:4.6, price:37, eta:'1 hr', img:'https://i.pravatar.cc/100?img=65'}
+  ],
+  service: [
+    {id:'s1', name:'CoolBreeze AC Services', rating:4.9, price:70, eta:'1 hr', img:'https://i.pravatar.cc/100?img=5'},
+    {id:'s2', name:'TechCare Solutions', rating:4.7, price:65, eta:'1.5 hr', img:'https://i.pravatar.cc/100?img=18'},
+    {id:'s3', name:'AirPure Servicing', rating:4.8, price:75, eta:'45 min', img:'https://i.pravatar.cc/100?img=29'},
+    {id:'s4', name:'HomeServe Malaysia', rating:4.6, price:60, eta:'1 hr', img:'https://i.pravatar.cc/100?img=60'}
+  ]
+};
+const repairIcon = { appliance:'🔌', furniture:'🛋️', service:'💨' };
+const repairTitle = { appliance:'Appliance Technicians', furniture:'Furniture Technicians', service:'Servicing Providers' };
+let selectedRepairCategory = null;
+let selectedTechId = null;
+
+function openRepairCategory(cat){
+  selectedRepairCategory = cat;
+  selectedTechId = null;
+  document.getElementById('techTitle').innerText = repairTitle[cat];
+  document.getElementById('techIconBox').innerText = repairIcon[cat];
+  renderTechs();
+  nav('repair-tech');
+}
+
+function renderTechs(){
+  const list = techData[selectedRepairCategory];
+  document.getElementById('techList').innerHTML = list.map(t =>
+    '<div class="pick-card ' + (selectedTechId===t.id?'selected':'') + '" onclick="selectTech(\'' + t.id + '\')">' +
+      '<div class="pav"><img src="' + t.img + '" alt=""></div>' +
+      '<div class="pinfo"><div class="pname">' + t.name + '</div><div class="pmeta">★ ' + t.rating + ' · Arrives in ' + t.eta + '</div></div>' +
+      '<div class="pprice">RM' + t.price + '</div>' +
+      '<div class="check">' + (selectedTechId===t.id?'✓':'') + '</div>' +
+    '</div>'
+  ).join('');
+  const btn = document.getElementById('techConfirmBtn');
+  if(selectedTechId){
+    const t = list.find(x => x.id === selectedTechId);
+    btn.disabled = false;
+    btn.innerText = 'Confirm Booking · RM' + t.price;
+  } else {
+    btn.disabled = true;
+    btn.innerText = 'Select a technician';
+  }
+}
+function selectTech(id){ selectedTechId = id; renderTechs(); }
+
+function confirmRepairBooking(){
+  if(!selectedTechId) return;
+  const t = techData[selectedRepairCategory].find(x => x.id === selectedTechId);
+  const label = selectedRepairCategory === 'appliance' ? 'Appliance Repair' : (selectedRepairCategory === 'furniture' ? 'Furniture Repair' : 'AC / Appliance Servicing');
+  const dt = getDateTimeLabel('repair');
+  bookService('repair', label + ' · ' + t.name, t.price, [
+    {label:'Technician', value:t.name},
+    {label:'Rating', value:'★ ' + t.rating},
+    {label:'Date', value:dt.dateLabel},
+    {label:'Time', value:dt.slotLabel},
+    {label:'Amount', value:'RM' + t.price.toFixed(2)}
+  ], { provider:t.name, dateLabel:dt.dateLabel, timeLabel:dt.slotLabel });
+}
+
+/* ---------------- GAS DELIVERY ---------------- */
+const gasSuppliers = [
+  {id:'g1', name:'GasExpress Delivery', img:'https://i.pravatar.cc/100?img=15'},
+  {id:'g2', name:'QuickGas Malaysia', img:'https://i.pravatar.cc/100?img=25'},
+  {id:'g3', name:'Local LPG Store', img:'https://i.pravatar.cc/100?img=36'},
+  {id:'g4', name:'PetroGas Home', img:'https://i.pravatar.cc/100?img=41'}
+];
+const gasPrices = { 12:{g1:35, g2:38, g3:33, g4:36}, 14:{g1:45, g2:47, g3:42, g4:44}, 50:{g1:150, g2:155, g3:145, g4:148} };
+let selectedGasSize = 12;
+let selectedGasSupplier = null;
+
+function pickGasSize(size){
+  selectedGasSize = size;
+  selectedGasSupplier = null;
+  [12,14,50].forEach(s => document.getElementById('gsize-'+s).classList.toggle('on', s===size));
+  renderGasSuppliers();
+}
+
+function renderGasSuppliers(){
+  const cards = gasSuppliers.map(s => {
+    const price = gasPrices[selectedGasSize][s.id];
+    return '<div class="pick-card ' + (selectedGasSupplier===s.id?'selected':'') + '" onclick="selectGasSupplier(\'' + s.id + '\')">' +
+      '<div class="pav"><img src="' + s.img + '" alt=""></div>' +
+      '<div class="pinfo"><div class="pname">' + s.name + '</div><div class="pmeta">Delivery within 90 min</div></div>' +
+      '<div class="pprice">RM' + price + '</div>' +
+      '<div class="check">' + (selectedGasSupplier===s.id?'✓':'') + '</div>' +
+    '</div>';
+  }).join('');
+  document.getElementById('gasSupplierList').innerHTML = '<div class="card"><h3>Compare suppliers</h3>' + cards + '</div>';
+  updateGasConfirmBtn();
+}
+function selectGasSupplier(id){ selectedGasSupplier = id; renderGasSuppliers(); }
+function updateGasConfirmBtn(){
+  const btn = document.getElementById('gasConfirmBtn');
+  if(selectedGasSupplier){
+    const price = gasPrices[selectedGasSize][selectedGasSupplier];
+    btn.disabled = false;
+    btn.innerText = 'Confirm Booking · RM' + price;
+  } else {
+    btn.disabled = true;
+    btn.innerText = 'Select a supplier';
+  }
+}
+function confirmGasBooking(){
+  if(!selectedGasSupplier) return;
+  const s = gasSuppliers.find(x => x.id === selectedGasSupplier);
+  const price = gasPrices[selectedGasSize][selectedGasSupplier];
+  const dt = getDateTimeLabel('gas');
+  bookService('gas', 'Gas Delivery (' + selectedGasSize + 'kg) · ' + s.name, price, [
+    {label:'Size', value:selectedGasSize+'kg'},
+    {label:'Supplier', value:s.name},
+    {label:'Date', value:dt.dateLabel},
+    {label:'Time', value:dt.slotLabel},
+    {label:'Amount', value:'RM'+price.toFixed(2)}
+  ], { provider:s.name, dateLabel:dt.dateLabel, timeLabel:dt.slotLabel });
+}
+renderGasSuppliers();
+
+/* ---------------- CARE ---------------- */
+const caregivers = [
+  {id:'c1', name:'Siti Maria', img:'https://i.pravatar.cc/120?img=47', rating:4.9, specialty:'Elderly Care', rate:35, exp:'6 years experience',
+   bio:'Certified elderly caregiver specializing in mobility support, medication reminders and companionship.',
+   certs:['First Aid Certified','Elderly Care Certification']},
+  {id:'c2', name:'Jason Tan', img:'https://i.pravatar.cc/120?img=52', rating:4.8, specialty:'Childcare', rate:30, exp:'4 years experience',
+   bio:'Patient and energetic childcare provider, experienced with toddlers and school-age kids.',
+   certs:['CPR Certified','Early Childhood Care Cert.']},
+  {id:'c3', name:'Mei Ling', img:'https://i.pravatar.cc/120?img=44', rating:4.9, specialty:'Elderly Care', rate:33, exp:'8 years experience',
+   bio:'Warm and detail-oriented caregiver, focused on dignity-centered elderly support and light housekeeping.',
+   certs:['Elderly Care Certification','Nutrition Basics Cert.']},
+  {id:'c4', name:'Ahmad Faris', img:'https://i.pravatar.cc/120?img=13', rating:4.7, specialty:'Childcare', rate:28, exp:'3 years experience',
+   bio:'Fun-loving childcare provider great with homework help and creative play.',
+   certs:['CPR Certified','Child Safety Cert.']}
+];
+
+function renderCareList(){
+  document.getElementById('careList').innerHTML = caregivers.map(c =>
+    '<div class="card">' +
+      '<div class="detail-header" style="margin-bottom:10px;">' +
+        '<div class="detail-avatar" style="width:48px; height:48px; font-size:16px;"><img src="' + c.img + '" alt=""></div>' +
+        '<div><div style="font-weight:800; font-size:13.5px;">' + c.name + ' <span class="badge" style="background:var(--recycle-bg); color:var(--recycle);">Verified</span></div>' +
+        '<div class="stars">★ ' + c.rating + ' · ' + c.specialty + '</div></div>' +
+      '</div>' +
+      '<div class="row">' +
+        '<button class="btn outline small" onclick="viewCaregiver(\'' + c.id + '\')">View Profile</button>' +
+        '<button class="btn small" style="background:var(--care);" onclick="viewCaregiver(\'' + c.id + '\')">Introduce</button>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+let selectedCaregiverId = null;
+function viewCaregiver(id){
+  selectedCaregiverId = id;
+  const c = caregivers.find(x => x.id === id);
+  document.getElementById('cdAvatarWrap').innerHTML = '<img src="' + c.img + '" alt="" style="width:100%;height:100%;object-fit:cover;">';
+  document.getElementById('cdName').innerText = c.name;
+  document.getElementById('cdStars').innerText = '★ ' + c.rating + ' · ' + c.specialty;
+  document.getElementById('cdExp').innerText = c.exp;
+  document.getElementById('cdBio').innerText = c.bio;
+  document.getElementById('cdCerts').innerHTML = c.certs.map(t => '<span class="cert-tag">✓ ' + t + '</span>').join('');
+  document.getElementById('cdRate').innerText = 'RM' + c.rate + '/hr';
+  nav('care-detail');
+}
+function bookCaregiver(){
+  const c = caregivers.find(x => x.id === selectedCaregiverId);
+  const price = c.rate * 2;
+  const dt = getDateTimeLabel('care');
+  bookService('care', 'In-Home Care · ' + c.name, price, [
+    {label:'Caregiver', value:c.name},
+    {label:'Specialty', value:c.specialty},
+    {label:'Duration', value:'2 hours'},
+    {label:'Date', value:dt.dateLabel},
+    {label:'Time', value:dt.slotLabel},
+    {label:'Amount', value:'RM'+price.toFixed(2)}
+  ], { provider:c.name, dateLabel:dt.dateLabel, timeLabel:dt.slotLabel });
+}
+renderCareList();
+
+/* ---------------- RECYCLE ---------------- */
+const selectedRTypes = new Set(['paper']);
+function toggleChip(val){
+  const el = document.getElementById('rtype-'+val);
+  if(selectedRTypes.has(val)){ selectedRTypes.delete(val); el.classList.remove('on'); }
+  else { selectedRTypes.add(val); el.classList.add('on'); }
+}
+let selectedCollectorName = 'GreenCycle Malaysia';
+function pickCollector(id, name){
+  selectedCollectorName = name;
+  ['green','eco'].forEach(k => document.getElementById('rcol-'+k).classList.toggle('on', k===id));
+}
+function updateRecyclePreview(){
+  const kg = parseFloat(document.getElementById('kgInput').value) || 0;
+  const pts = Math.max(Math.round(kg * 2), 0);
+  document.getElementById('ptsPreview').innerText = pts + ' pts';
+}
+function schedulePickup(){
+  const kg = parseFloat(document.getElementById('kgInput').value) || 0;
+  if(kg <= 0) return;
+  const pts = Math.round(kg * 2);
+  const types = Array.from(selectedRTypes).map(t => t.charAt(0).toUpperCase()+t.slice(1)).join(', ') || 'General';
+  const dt = getDateTimeLabel('recycle');
+  bookService('recycle', 'Recycling Pickup · ' + kg + 'kg', 0, [
+    {label:'Weight', value:kg+' kg'},
+    {label:'Materials', value:types},
+    {label:'Collector', value:selectedCollectorName},
+    {label:'Date', value:dt.dateLabel},
+    {label:'Time', value:dt.slotLabel},
+    {label:'Points Earned', value:'+'+pts+' pts'}
+  ], { pointsEarned:pts, provider:selectedCollectorName, dateLabel:dt.dateLabel, timeLabel:dt.slotLabel });
+  document.getElementById('kgInput').value = '';
+  updateRecyclePreview();
+}
+let cameraProofDone = false;
+function toggleCameraProof(){
+  cameraProofDone = !cameraProofDone;
+  document.getElementById('cameraBox').classList.toggle('done', cameraProofDone);
+  document.getElementById('cameraIcon').innerText = cameraProofDone ? '✅' : '📷';
+  document.getElementById('cameraText').innerText = cameraProofDone ? 'Photo proof added' : 'Tap to add photo proof of drop-off';
+  document.getElementById('dropoffBtn').disabled = !cameraProofDone;
+}
+function confirmDropoff(){
+  if(!cameraProofDone) return;
+  bookService('recycle', 'Self Drop-off · GreenPoint Recycling Hub', 0, [
+    {label:'Location', value:'GreenPoint Recycling Hub'},
+    {label:'Proof', value:'Photo attached ✅'},
+    {label:'Points Earned', value:'+10 pts'}
+  ], { pointsEarned:10, provider:'GreenPoint Recycling Hub', dateLabel:'Today', timeLabel:'-', skipAddress:true });
+  cameraProofDone = false;
+  document.getElementById('cameraBox').classList.remove('done');
+  document.getElementById('cameraIcon').innerText = '📷';
+  document.getElementById('cameraText').innerText = 'Tap to add photo proof of drop-off';
+  document.getElementById('dropoffBtn').disabled = true;
+}
+
+/* ---------------- VOUCHERS ---------------- */
+const vouchers = [
+  {id:'v1', label:'RM5 Voucher', cost:50},
+  {id:'v2', label:'RM10 Voucher', cost:100},
+  {id:'v3', label:'Free Recycling Pickup Pass', cost:20}
+];
+function renderVouchers(){
+  document.getElementById('voucherList').innerHTML = vouchers.map(v =>
+    '<div class="voucher-card"><div><div class="vname">🎟️ ' + v.label + '</div><div class="vcost">' + v.cost + ' pts</div></div>' +
+    '<button class="btn small" style="background:var(--recycle);" ' + (state.points<v.cost?'disabled':'') + ' onclick="redeemVoucher(\'' + v.id + '\')">Redeem</button></div>'
+  ).join('');
+}
+function redeemVoucher(id){
+  const v = vouchers.find(x => x.id === id);
+  if(state.points < v.cost) return;
+  state.points -= v.cost;
+  refreshPoints();
+  showConfirm(v.label, 0, [
+    {label:'Voucher', value:v.label},
+    {label:'Points Used', value:v.cost+' pts'},
+    {label:'Remaining Balance', value:state.points+' pts'}
+  ]);
+}
+
+/* ---------------- PET ---------------- */
+const petProviders = [
+  {id:'p1', name:'Paws & Claws Care', img:'https://i.pravatar.cc/100?img=27', rating:4.8},
+  {id:'p2', name:'Happy Tails Service', img:'https://i.pravatar.cc/100?img=32', rating:4.9},
+  {id:'p3', name:'Furry Friends Malaysia', img:'https://i.pravatar.cc/100?img=57', rating:4.7}
+];
+let selectedPetProviderId = 'p1';
+function renderPetProviders(){
+  document.getElementById('petProviderList').innerHTML = petProviders.map(p =>
+    '<div class="pick-card ' + (selectedPetProviderId===p.id?'selected':'') + '" onclick="selectPetProvider(\'' + p.id + '\')">' +
+      '<div class="pav"><img src="' + p.img + '" alt=""></div>' +
+      '<div class="pinfo"><div class="pname">' + p.name + '</div><div class="pmeta">★ ' + p.rating + ' · Verified</div></div>' +
+      '<div class="check">' + (selectedPetProviderId===p.id?'✓':'') + '</div>' +
+    '</div>'
+  ).join('');
+}
+function selectPetProvider(id){ selectedPetProviderId = id; renderPetProviders(); }
+
+const petOptions = {
+  walking:  { label:'Choose walk duration', opts:[{id:'30', name:'30 min', price:25}, {id:'60', name:'60 min', price:40}] },
+  grooming: { label:'Choose package', opts:[{id:'basic', name:'Basic Bath', price:35}, {id:'full', name:'Full Groom', price:60}, {id:'nail', name:'Nail Trim', price:15}] },
+  feeding:  { label:'Feeding frequency', opts:[{id:'1', name:'1x / day', price:20}, {id:'2', name:'2x / day', price:35}, {id:'3', name:'3x / day', price:50}] }
+};
+const petFormMeta = {
+  walking:  { title:'Pet Walking', subtitle:'Tell us about your dog or cat', icon:'🚶', remarks:'Route preferences, leash behavior, favorite treats...' },
+  grooming: { title:'Grooming', subtitle:'Tell us about your pet coat and needs', icon:'✂️', remarks:'Skin sensitivities, preferred shampoo, styling notes...' },
+  feeding:  { title:'Feeding Service', subtitle:'For when no one is home', icon:'🍽️', remarks:'Feeding times, portion size, food brand, allergies...' }
+};
+const breedOptions = {
+  dog: ['Golden Retriever','Poodle','Local Mixed Breed','Chihuahua','Husky','Other'],
+  cat: ['British Shorthair','Persian','Local / Domestic Shorthair','Siamese','Other']
+};
+const personalityOptions = ['Friendly','Energetic','Shy','Calm','Independent','Playful'];
+
+let petCategory = null;
+let petType = 'dog';
+let selectedPetOptionId = null;
+const selectedPersonalities = new Set();
+
+function openPetCategory(cat){
+  petCategory = cat;
+  petType = 'dog';
+  selectedPetOptionId = null;
+  selectedPetProviderId = 'p1';
+  selectedPersonalities.clear();
+  document.getElementById('petFormTitle').innerText = petFormMeta[cat].title;
+  document.getElementById('petFormSubtitle').innerText = petFormMeta[cat].subtitle;
+  document.getElementById('petIconBox').innerText = petFormMeta[cat].icon;
+  document.getElementById('petOptionLabel').innerText = petOptions[cat].label;
+  document.getElementById('petOptionLabel').style.color = 'var(--ink)';
+  document.getElementById('petRemarksLabel').innerText = 'Remarks';
+  document.getElementById('petRemarks').placeholder = petFormMeta[cat].remarks;
+  document.getElementById('petName').value = '';
+  document.getElementById('petRemarks').value = '';
+  document.getElementById('ptype-dog').classList.add('on');
+  document.getElementById('ptype-cat').classList.remove('on');
+  renderPetProviders();
+  renderPetOptions();
+  renderBreedSelect();
+  renderPersonalityChips();
+  nav('pet-form');
+}
+function renderPetOptions(){
+  document.getElementById('petOptionChips').innerHTML = petOptions[petCategory].opts.map(o =>
+    '<div class="chip ' + (selectedPetOptionId===o.id?'on':'') + '" onclick="selectPetOption(\'' + o.id + '\')">' + o.name + ' · RM' + o.price + '</div>'
+  ).join('');
+}
+function selectPetOption(id){ selectedPetOptionId = id; document.getElementById('petOptionLabel').style.color = 'var(--ink)'; renderPetOptions(); }
+function setPetType(type){
+  petType = type;
+  document.getElementById('ptype-dog').classList.toggle('on', type==='dog');
+  document.getElementById('ptype-cat').classList.toggle('on', type==='cat');
+  renderBreedSelect();
+}
+function renderBreedSelect(){
+  document.getElementById('petBreed').innerHTML = breedOptions[petType].map(b => '<option value="' + b + '">' + b + '</option>').join('');
+}
+function renderPersonalityChips(){
+  document.getElementById('petPersonalityChips').innerHTML = personalityOptions.map(p =>
+    '<div class="chip ' + (selectedPersonalities.has(p)?'on':'') + '" onclick="togglePersonality(\'' + p + '\')">' + p + '</div>'
+  ).join('');
+}
+function togglePersonality(p){
+  if(selectedPersonalities.has(p)) selectedPersonalities.delete(p); else selectedPersonalities.add(p);
+  renderPersonalityChips();
+}
+function confirmPetBooking(){
+  if(!selectedPetOptionId){
+    document.getElementById('petOptionLabel').style.color = 'var(--care)';
+    return;
+  }
+  const opt = petOptions[petCategory].opts.find(o => o.id === selectedPetOptionId);
+  const provider = petProviders.find(p => p.id === selectedPetProviderId);
+  const petName = document.getElementById('petName').value.trim() || 'Your pet';
+  const breed = document.getElementById('petBreed').value;
+  const personality = Array.from(selectedPersonalities).join(', ') || 'Not specified';
+  const remarks = document.getElementById('petRemarks').value.trim() || 'None';
+  const dt = getDateTimeLabel('pet');
+  const title = petFormMeta[petCategory].title + ' · ' + petName;
+  bookService('pet', title, opt.price, [
+    {label:'Provider', value:provider.name},
+    {label:'Pet', value:petName + ' (' + (petType==='dog'?'Dog':'Cat') + ')'},
+    {label:'Breed', value:breed},
+    {label:'Personality', value:personality},
+    {label:'Option', value:opt.name},
+    {label:'Remarks', value:remarks},
+    {label:'Date', value:dt.dateLabel},
+    {label:'Time', value:dt.slotLabel},
+    {label:'Amount', value:'RM'+opt.price.toFixed(2)}
+  ], { provider:provider.name, dateLabel:dt.dateLabel, timeLabel:dt.slotLabel });
+}
+
+/* ---------------- BOOKINGS ---------------- */
+let bookingsTab = 'upcoming';
+function openBookings(){ nav('bookings'); renderBookings(); }
+
+/* ---------------- CHAT ---------------- */
+const chatBotReplies = [
+  'Got it! Let me check that for you.',
+  'Thanks for the details. Our team will follow up on this shortly.',
+  'You can find that under the Bookings tab if you\'d like to double-check.',
+  'I\'ve noted that down — is there anything else you\'d like help with?',
+  'Sorry to hear that. Let me connect you with a specialist for a faster resolution.'
+];
+const chatProviderReplies = [
+  'Sure thing, see you at the scheduled time!',
+  'No problem, thanks for letting me know.',
+  'I\'m on my way shortly, thanks for your patience!',
+  'Got it, I\'ll take care of that for you.',
+  'Thanks for the update, appreciate it!'
+];
+let activeChatThreadId = 'support';
+function nowLabel(){
+  return new Date().toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+}
+function ensureProviderThread(category, providerName){
+  if(!providerName) return;
+  const id = 'prov-' + category + '-' + providerName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  let thread = state.chatThreads.find(t => t.id === id);
+  if(!thread){
+    thread = {
+      id: id, name: providerName, icon: categoryIcon(category), role:'provider', category: category,
+      messages: [ { from:'them', text:'Hi! I\'m ' + providerName + ', your ' + catLabel[category] + ' provider for this booking. Message me anytime if you have questions!', time: nowLabel() } ]
+    };
+    state.chatThreads.push(thread);
+  }
+  return thread;
+}
+function openChat(){
+  nav('chat');
+  renderChatList();
+}
+function renderChatList(){
+  const el = document.getElementById('chatList');
+  el.innerHTML = state.chatThreads.map(t => {
+    const last = t.messages[t.messages.length - 1];
+    const preview = last ? (last.from === 'me' ? 'You: ' : '') + last.text : '';
+    return '<div class="chat-thread-card" onclick="openChatThread(\'' + t.id + '\')">' +
+      '<div class="chat-thread-icon" style="background:' + (t.role==='bot' ? 'var(--navy)' : catBg[t.category]) + '; color:' + (t.role==='bot' ? '#fff' : catColor[t.category]) + ';">' + t.icon + '</div>' +
+      '<div class="chat-thread-info"><div class="chat-thread-name">' + t.name + (t.role==='provider' ? '<span class="chat-thread-tag">' + catLabel[t.category] + '</span>' : '') + '</div>' +
+      '<div class="chat-thread-preview">' + preview + '</div></div>' +
+      (last ? '<div class="chat-thread-time">' + last.time + '</div>' : '') +
+    '</div>';
+  }).join('');
+}
+function openChatThread(id){
+  activeChatThreadId = id;
+  const thread = state.chatThreads.find(t => t.id === id);
+  document.getElementById('chatThreadName').innerText = thread ? thread.name : 'Chat';
+  nav('chatThread');
+  renderChatThread();
+}
+function renderChatThread(){
+  const thread = state.chatThreads.find(t => t.id === activeChatThreadId);
+  if(!thread) return;
+  const el = document.getElementById('chatMessages');
+  el.innerHTML = thread.messages.map(m =>
+    '<div class="chat-bubble-row ' + (m.from === 'me' ? 'user' : 'bot') + '">' +
+      '<div><div class="chat-bubble">' + m.text + '</div><div class="chat-time">' + m.time + '</div></div>' +
+    '</div>'
+  ).join('');
+  el.scrollTop = el.scrollHeight;
+}
+function sendChatMessage(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text) return;
+  const thread = state.chatThreads.find(t => t.id === activeChatThreadId);
+  if(!thread) return;
+  thread.messages.push({ from:'me', text:text, time:nowLabel() });
+  input.value = '';
+  renderChatThread();
+  setTimeout(() => {
+    const pool = thread.role === 'provider' ? chatProviderReplies : chatBotReplies;
+    const reply = pool[Math.floor(Math.random() * pool.length)];
+    thread.messages.push({ from:'them', text:reply, time:nowLabel() });
+    renderChatThread();
+  }, 700);
+}
+function setBookingsTab(tab){
+  bookingsTab = tab;
+  ['upcoming','completed','cancelled'].forEach(t => document.getElementById('btab-'+t).classList.toggle('on', t===tab));
+  renderBookings();
+}
+const bookingStatusColor = { upcoming:{bg:'#E4F0FF', c:'#2A5FE8'}, completed:{bg:'#E8F6EE', c:'#4FAE7C'}, cancelled:{bg:'#FDEAEA', c:'#E24C4C'} };
+function renderBookings(){
+  const list = state.bookings.filter(b => b.status === bookingsTab);
+  const el = document.getElementById('bookingsList');
+  if(list.length === 0){
+    el.innerHTML = '<div class="empty-note" style="padding:40px 0;">No ' + bookingsTab + ' bookings yet.</div>';
+    return;
+  }
+  el.innerHTML = list.map(b => {
+    const sc = bookingStatusColor[b.status];
+    let actions = '';
+    if(b.status === 'upcoming'){
+      actions = '<div class="booking-actions">' +
+        '<button class="btn outline small" onclick="cancelBooking(\'' + b.id + '\')">Cancel</button>' +
+        '<button class="btn small" style="background:var(--navy);" onclick="completeBooking(\'' + b.id + '\')">Mark Completed</button>' +
+      '</div>';
+    } else if(b.status === 'completed'){
+      actions = b.rating > 0
+        ? '<div class="stars" style="margin-top:8px;">' + '★'.repeat(b.rating) + '☆'.repeat(5-b.rating) + ' rated</div>' +
+          (b.comment ? '<div class="booking-id" style="margin-top:4px; font-style:italic;">“' + b.comment + '”</div>' : '')
+        : '<button class="btn small" style="background:var(--expense); margin-top:8px;" onclick="openRate(\'' + b.id + '\')">Rate Service</button>';
+    }
+    return '<div class="booking-card">' +
+      '<div class="btop"><div style="display:flex;"><div class="bicon" style="background:' + catBg[b.category] + '; color:' + catColor[b.category] + ';">' + categoryIcon(b.category) + '</div>' +
+      '<div><div class="bname">' + b.title + '</div><div class="bprovider">' + (b.provider||'') + '</div></div></div>' +
+      '<div class="booking-status" style="background:' + sc.bg + '; color:' + sc.c + ';">' + b.status.charAt(0).toUpperCase()+b.status.slice(1) + '</div></div>' +
+      '<div class="booking-meta"><span>📅 ' + (b.date||'-') + '</span><span>🕒 ' + (b.time||'-') + '</span><span class="booking-price">' + fmt(b.price) + '</span></div>' +
+      (b.address ? '<div class="booking-id">📍 ' + b.address + '</div>' : '') +
+      '<div class="booking-id">' + b.id + '</div>' +
+      actions +
+    '</div>';
+  }).join('');
+}
+function categoryIcon(cat){
+  return { repair:'🔧', gas:'🔥', care:'❤️', recycle:'♻️', pet:'🐾' }[cat] || '🏠';
+}
+function cancelBooking(id){
+  const b = state.bookings.find(x => x.id === id);
+  if(b){ b.status = 'cancelled'; renderBookings(); }
+}
+function completeBooking(id){
+  const b = state.bookings.find(x => x.id === id);
+  if(b){ b.status = 'completed'; renderBookings(); }
+}
+let ratingBookingId = null;
+let ratingValue = 0;
+function openRate(id){
+  ratingBookingId = id;
+  ratingValue = 0;
+  const b = state.bookings.find(x => x.id === id);
+  document.getElementById('rateServiceName').innerText = b.title;
+  document.getElementById('rateComment').value = '';
+  renderStars();
+  nav('rate');
+}
+function setStar(n){ ratingValue = n; renderStars(); }
+function renderStars(){
+  const spans = document.querySelectorAll('#starPicker span');
+  spans.forEach((s, i) => s.classList.toggle('filled', i < ratingValue));
+}
+function submitRating(){
+  if(ratingValue === 0) return;
+  const b = state.bookings.find(x => x.id === ratingBookingId);
+  const comment = document.getElementById('rateComment').value.trim();
+  if(b){ b.rating = ratingValue; b.comment = comment; }
+  nav('bookings');
+  renderBookings();
+}
+
+/* ---------------- PROFILE ---------------- */
+function renderProfile(){
+  const el = document.getElementById('profileContent');
+  if(state.user){
+    el.innerHTML =
+      '<div class="card" style="display:flex; align-items:center; gap:14px;">' +
+        '<div class="avatar" style="width:52px;height:52px;font-size:18px;">' + state.user.name.charAt(0).toUpperCase() + '</div>' +
+        '<div><div style="font-weight:800; font-size:15px;">' + state.user.name + '</div><div style="font-size:12px; color:var(--sub); font-weight:700;">' + state.user.email + '</div></div>' +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="exp-row" style="cursor:pointer;" onclick="nav(\'addresses\')"><div class="l">📍 Saved Addresses</div><span>›</span></div>' +
+        '<div class="exp-row" style="cursor:pointer;" onclick="nav(\'notifications\')"><div class="l">🔔 Notifications</div><span>›</span></div>' +
+        '<div class="exp-row" style="cursor:pointer;" onclick="nav(\'settings\')"><div class="l">⚙️ App Settings</div><span>›</span></div>' +
+        '<div class="exp-row" style="cursor:pointer;" onclick="openBookings()"><div class="l">📅 My Bookings</div><span>›</span></div>' +
+      '</div>' +
+      '<button class="btn outline" onclick="logout()">Log Out</button>';
+  } else {
+    el.innerHTML =
+      '<div class="card" style="text-align:center;">' +
+        '<div class="avatar" style="width:52px;height:52px;font-size:18px; margin:0 auto 12px auto;">G</div>' +
+        '<div style="font-weight:800; font-size:15px;">Guest User</div>' +
+        '<p class="field-hint">Log in or create an account to save your bookings, address and points.</p>' +
+        '<button class="btn" style="background:var(--navy); margin-top:10px;" onclick="openAuth(\'login\',\'profile\')">Log In</button>' +
+        '<button class="btn outline" style="margin-top:10px;" onclick="openAuth(\'register\',\'profile\')">Sign Up</button>' +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="exp-row" style="cursor:pointer;" onclick="nav(\'addresses\')"><div class="l">📍 Saved Addresses</div><span>›</span></div>' +
+        '<div class="exp-row" style="cursor:pointer;" onclick="nav(\'notifications\')"><div class="l">🔔 Notifications</div><span>›</span></div>' +
+        '<div class="exp-row" style="cursor:pointer;" onclick="nav(\'settings\')"><div class="l">⚙️ App Settings</div><span>›</span></div>' +
+        '<div class="exp-row" style="cursor:pointer;" onclick="openBookings()"><div class="l">📅 My Bookings</div><span>›</span></div>' +
+      '</div>';
+  }
+}
+
+/* ---------------- ADDRESSES ---------------- */
+function renderAddresses(){
+  document.getElementById('addrList').innerHTML = state.addresses.map((a, i) =>
+    '<div class="addr-card ' + (i===state.activeAddressIndex?'active':'') + '" onclick="setActiveAddress(' + i + ')">' +
+      '<div class="alabel">📍 ' + a.label + (i===state.activeAddressIndex ? ' <span class="activetag">Used for scheduling</span>' : '') + '</div>' +
+      '<div class="atext">' + a.text + '</div>' +
+    '</div>'
+  ).join('');
+}
+function setActiveAddress(i){
+  state.activeAddressIndex = i;
+  renderAddresses();
+}
+function addAddress(){
+  const label = document.getElementById('newAddrLabel').value.trim();
+  const text = document.getElementById('newAddrText').value.trim();
+  if(!label || !text) return;
+  state.addresses.push({ label:label, text:text });
+  // The address the guest just entered becomes the one used for upcoming bookings,
+  // replacing whatever was previously scheduled (e.g. the default placeholder address).
+  state.activeAddressIndex = state.addresses.length - 1;
+  document.getElementById('newAddrLabel').value = '';
+  document.getElementById('newAddrText').value = '';
+  renderAddresses();
+}
+
+/* ---------------- SETTINGS ---------------- */
+function pickSetting(group, val){
+  const map = { lang:['en','ms','zh'], theme:['light','dark','auto'] };
+  map[group].forEach(v => document.getElementById(group+'-'+v).classList.toggle('on', v===val));
+}
+
+/* ---------------- NAV WRAPPER for screens needing render-on-open ---------------- */
+const _origNav = nav;
+nav = function(id){
+  _origNav(id);
+  if(id === 'addresses') renderAddresses();
+  if(id === 'profile') renderProfile();
+  if(id === 'bookings') renderBookings();
+};
+
+/* ---------------- INIT ---------------- */
+initDateInputs();
+updateRecyclePreview();
+refreshExpenseScreen();
+refreshPoints();
+refreshHome();
+renderProfile();
+renderPetProviders();
+</script>
+
+</body>
+</html>
