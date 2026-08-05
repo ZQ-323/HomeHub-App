@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>HomeHub Prototype</title>
+<title>VestaGo Prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -286,7 +286,7 @@
       <div class="content" style="padding:0;">
         <div class="welcome-wrap">
   <div class="auth-logo">🏡</div>
-  <h1 style="color:#000000;">Welcome to HomeHub</h1>
+  <h1 style="color:#000000;">Welcome to VestaGo</h1>
   <p style="color:#000000;">All your household services, one tap away</p>
   <div class="auth-actions">
     <button class="btn" style="background:var(--recycle);" onclick="openAuth('login','welcome')">Log In</button>
@@ -301,7 +301,7 @@
       <div class="header" style="background:var(--navy);">
         <div class="toprow"><button class="back" onclick="authBack()">←</button></div>
         <h2>Log In</h2>
-        <p>Welcome back to HomeHub</p>
+        <p>Welcome back to VestaGo</p>
       </div>
       <div class="content">
         <div class="card">
@@ -319,7 +319,7 @@
       <div class="header" style="background:var(--navy);">
         <div class="toprow"><button class="back" onclick="authBack()">←</button></div>
         <h2>Create Account</h2>
-        <p>Join HomeHub in seconds</p>
+        <p>Join VestaGo in seconds</p>
       </div>
       <div class="content">
         <div class="card">
@@ -397,7 +397,7 @@
     <div class="screen" id="services">
       <div class="header" style="background:var(--navy);">
         <h2>All Services</h2>
-        <p>Everything HomeHub offers</p>
+        <p>Everything VestaGo offers</p>
       </div>
       <div class="content">
         <div class="grid">
@@ -807,7 +807,7 @@
     <div class="screen" id="profile">
       <div class="header" style="background:var(--navy);">
         <h2>My Profile</h2>
-        <p>Manage your HomeHub account</p>
+        <p>Manage your VestaGo account</p>
       </div>
       <div class="content" id="profileContent"></div>
       <div class="bottomnav">
@@ -908,8 +908,8 @@ const state = {
   addresses: [ {label:'Home', text:'27, Jalan Harmoni 5, Taman Bahagia, 81100 Johor Bahru, Johor'} ],
   activeAddressIndex: 0,
   chatThreads: [
-    { id:'support', name:'HomeHub Support', icon:'🤖', role:'bot',
-      messages:[ { from:'them', text:'Hi there! 👋 I\'m the HomeHub support assistant. How can I help you today?', time:'9:00 AM' } ] }
+    { id:'support', name:'VestaGo Support', icon:'🤖', role:'bot',
+      messages:[ { from:'them', text:'Hi there! 👋 I\'m the VestaGo support assistant. How can I help you today?', time:'9:00 AM' } ] }
   ]
 };
 function getActiveAddress(){
