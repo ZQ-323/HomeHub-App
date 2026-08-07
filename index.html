@@ -1074,7 +1074,7 @@ const state = {
 function getActiveAddress(){
   return state.addresses[state.activeAddressIndex] || state.addresses[0];
 }
-const catLabel = { repair:'Repair', gas:'Gas Delivery', care:'Home Care', recycle:'Recycling', pet:'Pet Care', clean:'Cleaning Service' };
+const catLabel = { repair:'Repair/Services', gas:'Gas Delivery', care:'Home Care', recycle:'Recycling', pet:'Pet Care', clean:'Cleaning Service' };
 const catColor = { repair:'var(--repair)', gas:'var(--gas)', care:'var(--care)', recycle:'var(--recycle)', pet:'var(--pet)', clean:'var(--clean)' };
 const catBg = { repair:'var(--repair-bg)', gas:'var(--gas-bg)', care:'var(--care-bg)', recycle:'var(--recycle-bg)', pet:'var(--pet-bg)', clean:'var(--clean-bg)' };
 let authReturn = 'welcome';
@@ -1133,7 +1133,8 @@ function refreshExpenseScreen(){
   barsEl.innerHTML = cats.map(c => {
     const val = state.byCategory[c];
     const h = val > 0 ? 78 : 14;
-    return '<div class="bar-col"><div class="bar" style="height:' + h + '%; background:' + (val>0?catColor[c]:'var(--line)') + ';"></div><div class="blabel">' + catLabel[c] + '</div></div>';
+    const barLabel = catLabel[c].replace('/', '/<br>');
+    return '<div class="bar-col"><div class="bar" style="height:' + h + '%; background:' + (val>0?catColor[c]:'var(--line)') + ';"></div><div class="blabel">' + barLabel + '</div></div>';
   }).join('');
   const listEl = document.getElementById('expList');
   const anySpend = cats.some(c => state.byCategory[c] > 0);
