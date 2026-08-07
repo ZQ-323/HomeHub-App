@@ -23,6 +23,7 @@
     --care:#FF6F91;   --care-bg:#FFEAF0;
     --recycle:#4FAE7C;--recycle-bg:#E8F6EE;
     --pet:#9B6BD9;    --pet-bg:#F1E9FB;
+    --clean:#29ABE2;  --clean-bg:#E5F6FD;
     --expense:#E0A72E;--expense-bg:#FBF1DD;
   }
   *{box-sizing:border-box;}
@@ -66,10 +67,10 @@
   .avatar img{width:100%; height:100%; object-fit:cover;}
   .search{ margin:14px 20px 6px 20px; background:#fff; border:1.5px solid var(--line); border-radius:16px; padding:12px 16px; color:var(--sub); font-weight:700; font-size:13.5px; display:flex; gap:8px; align-items:center; }
 
-  .quickcats{display:flex; gap:18px; padding:16px 20px 4px 20px; overflow-x:auto;}
-  .quickcat{display:flex; flex-direction:column; align-items:center; gap:6px; cursor:pointer; flex-shrink:0;}
-  .quickcat .qicon{width:52px;height:52px;border-radius:16px; display:flex;align-items:center;justify-content:center; font-size:22px;}
-  .quickcat span{font-size:11px; font-weight:800; color:var(--ink);}
+  .quickcats{display:flex; gap:14px; padding:16px 20px 4px 20px; overflow-x:auto; align-items:flex-start;}
+  .quickcat{display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:6px; cursor:pointer; flex:0 0 64px; width:64px; max-width:64px;}
+  .quickcat .qicon{width:52px;height:52px;border-radius:16px; display:flex;align-items:center;justify-content:center; font-size:22px; flex-shrink:0;}
+  .quickcat span{width:64px; max-width:64px; font-size:11px; font-weight:800; color:var(--ink); text-align:center; line-height:1.3; min-height:28px; display:flex; align-items:flex-start; justify-content:center; word-break:normal; overflow-wrap:break-word;}
 
   .promo-card{ margin:14px 20px; background:linear-gradient(135deg,#FF8A3D,#E8532B); border-radius:20px; padding:18px 20px; color:#fff; position:relative; overflow:hidden; }
   .promo-card .tag{background:rgba(255,255,255,.25); font-size:10.5px; font-weight:800; padding:4px 10px; border-radius:20px; display:inline-block; margin-bottom:8px;}
@@ -158,7 +159,7 @@
   .bars{display:flex; align-items:flex-end; gap:10px; height:110px; margin:10px 0 26px 0;}
   .bar-col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;}
   .bar{width:100%; border-radius:8px 8px 0 0; background:var(--line); transition:height .35s ease;}
-  .bar-col .blabel{font-size:9px; font-weight:800; color:var(--sub); margin-top:10px; text-align:center;}
+  .bar-col .blabel{font-size:9px; font-weight:800; color:var(--sub); margin-top:10px; text-align:center; min-height:22px; line-height:1.3; display:flex; align-items:flex-start; justify-content:center;}
   .exp-row{display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--line); font-size:13px;}
   .exp-row:last-child{border-bottom:none;}
   .exp-row .l{display:flex; align-items:center; gap:10px; font-weight:700; color:var(--ink);}
@@ -346,10 +347,11 @@
 
         <div class="quickcats">
           <div class="quickcat" onclick="nav('repair')"><div class="qicon" style="background:var(--repair-bg); color:var(--repair);">🔧</div><span>Repair</span></div>
-          <div class="quickcat" onclick="nav('gas')"><div class="qicon" style="background:var(--gas-bg); color:var(--gas);">🔥</div><span>Gas</span></div>
-          <div class="quickcat" onclick="nav('care')"><div class="qicon" style="background:var(--care-bg); color:var(--care);">❤️</div><span>Care</span></div>
-          <div class="quickcat" onclick="nav('recycle')"><div class="qicon" style="background:var(--recycle-bg); color:var(--recycle);">♻️</div><span>Recycle</span></div>
-          <div class="quickcat" onclick="nav('pet')"><div class="qicon" style="background:var(--pet-bg); color:var(--pet);">🐾</div><span>Pet</span></div>
+          <div class="quickcat" onclick="nav('gas')"><div class="qicon" style="background:var(--gas-bg); color:var(--gas);">🔥</div><span>Gas Delivery</span></div>
+          <div class="quickcat" onclick="nav('care')"><div class="qicon" style="background:var(--care-bg); color:var(--care);">❤️</div><span>Home Care</span></div>
+          <div class="quickcat" onclick="nav('recycle')"><div class="qicon" style="background:var(--recycle-bg); color:var(--recycle);">♻️</div><span>Recycling</span></div>
+          <div class="quickcat" onclick="nav('pet')"><div class="qicon" style="background:var(--pet-bg); color:var(--pet);">🐾</div><span>Pet Care</span></div>
+          <div class="quickcat" onclick="nav('clean')"><div class="qicon" style="background:var(--clean-bg); color:var(--clean);">🧹</div><span>Cleaning Service</span></div>
         </div>
 
         <div class="promo-card">
@@ -374,6 +376,7 @@
   <div class="desc">Elderly & child care</div></div>
           <div class="app-tile" onclick="nav('recycle')"><div class="icon" style="background:var(--recycle-bg); color:var(--recycle);">♻️</div><div class="name">Recycling</div><div class="desc">Pickup, drop-off & rewards</div></div>
           <div class="app-tile" onclick="nav('pet')"><div class="icon" style="background:var(--pet-bg); color:var(--pet);">🐾</div><div class="name">Pet Care</div><div class="desc">Walk, groom & feed</div></div>
+          <div class="app-tile" onclick="nav('clean')"><div class="icon" style="background:var(--clean-bg); color:var(--clean);">🧹</div><div class="name">Cleaning Service</div><div class="desc">House & car cleaning</div></div>
           <div class="app-tile" onclick="nav('expense')"><div class="icon" style="background:var(--expense-bg); color:var(--expense);">💰</div><div class="name">Expenses</div><div class="desc">Monthly summary</div></div>
         </div>
 
@@ -381,6 +384,7 @@
         <div class="popular-row">
           <div class="popular-card" onclick="nav('gas')"><div class="picon" style="background:var(--gas-bg); color:var(--gas);">🔥</div><div class="pname">Gas Delivery</div><div class="pfrom">From RM 35</div><div class="prate">★ 4.9 (521)</div></div>
           <div class="popular-card" onclick="nav('care')"><div class="picon" style="background:var(--care-bg); color:var(--care);">❤️</div><div class="pname">In-Home Care</div><div class="pfrom">From RM 30/hr</div><div class="prate">★ 4.8 (312)</div></div>
+          <div class="popular-card" onclick="nav('clean')"><div class="picon" style="background:var(--clean-bg); color:var(--clean);">🧹</div><div class="pname">Cleaning Service</div><div class="pfrom">From RM 10</div><div class="prate">★ 4.8 (398)</div></div>
           <div class="popular-card" onclick="openRepairCategory('service')"><div class="picon" style="background:var(--repair-bg); color:var(--repair);">💨</div><div class="pname">AC Service</div><div class="pfrom">From RM 70</div><div class="prate">★ 4.9 (234)</div></div>
         </div>
       </div>
@@ -406,6 +410,7 @@
           <div class="app-tile" onclick="nav('care')"><div class="icon" style="background:var(--care-bg); color:var(--care);">❤️</div><div class="name">In-Home Care</div><div class="desc">Elderly & child care</div></div>
           <div class="app-tile" onclick="nav('recycle')"><div class="icon" style="background:var(--recycle-bg); color:var(--recycle);">♻️</div><div class="name">Recycling</div><div class="desc">Pickup, drop-off & rewards</div></div>
           <div class="app-tile" onclick="nav('pet')"><div class="icon" style="background:var(--pet-bg); color:var(--pet);">🐾</div><div class="name">Pet Care</div><div class="desc">Walk, groom & feed</div></div>
+          <div class="app-tile" onclick="nav('clean')"><div class="icon" style="background:var(--clean-bg); color:var(--clean);">🧹</div><div class="name">Cleaning Service</div><div class="desc">House & car cleaning</div></div>
           <div class="app-tile" onclick="nav('expense')"><div class="icon" style="background:var(--expense-bg); color:var(--expense);">💰</div><div class="name">Expenses</div><div class="desc">Monthly summary</div></div>
         </div>
       </div>
@@ -446,16 +451,51 @@
       </div>
     </div>
 
+    <!-- ============ REPAIR DETAILS (issue description + photo) ============ -->
+    <div class="screen" id="repair-details">
+      <div class="header" style="background:var(--repair);">
+        <div class="toprow"><button class="back" onclick="nav('repair')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box" id="detailsIconBox">🔧</div>
+          <div><h2 id="detailsTitle">Tell us what's wrong</h2><p>This helps technicians quote accurately</p></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="card">
+          <h3>📝 Describe the issue</h3>
+          <p class="desc">The more detail you give, the more accurate your quote will be.</p>
+          <label class="flabel">What's the problem?</label>
+          <textarea id="repairIssueDesc" placeholder="E.g. Washing machine won't spin and makes a loud noise during the rinse cycle..." oninput="updateRepairDetailsBtn()"></textarea>
+        </div>
+        <div class="card">
+          <h3>📷 Upload photos</h3>
+          <p class="desc">Add photos of the issue so the technician knows what to expect.</p>
+          <div class="camera-box" id="repairCameraBox" onclick="toggleRepairCameraProof()">
+            <div class="cicon" id="repairCameraIcon">📷</div>
+            <div class="ctext" id="repairCameraText">Tap to add photo of the issue</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>🔍 Inspection Fee</h3>
+          <p class="desc">A standard <strong>RM30 inspection fee</strong> applies to every visit. This fee is <strong>waived</strong> if you go ahead with the repair. If you decide to cancel because the quote is too high, the RM30 inspection fee still applies.</p>
+        </div>
+        <button class="btn" id="repairDetailsBtn" style="background:var(--repair);" disabled onclick="proceedToTechList()">Find Technician</button>
+      </div>
+    </div>
+
     <!-- ============ REPAIR TECHNICIAN LIST ============ -->
     <div class="screen" id="repair-tech">
       <div class="header" style="background:var(--repair);">
-        <div class="toprow"><button class="back" onclick="nav('repair')">←</button></div>
+        <div class="toprow"><button class="back" onclick="nav('repair-details')">←</button></div>
         <div class="header-icon-row">
           <div class="header-icon-box" id="techIconBox">🔧</div>
           <div><h2 id="techTitle">Choose a Technician</h2><p>Compare rating, price & arrival time</p></div>
         </div>
       </div>
       <div class="content">
+        <div class="card" style="background:var(--repair-bg); border-color:var(--repair-bg);">
+          <p class="desc" style="margin:0; color:var(--ink);">💰 <strong>Base Labor Fee + Parts Cost (variable)</strong> — the final amount depends on the parts your repair needs. No hidden charges.</p>
+        </div>
         <div id="techList"></div>
         <div class="card">
           <h3>📅 Choose date & time</h3>
@@ -719,6 +759,125 @@
       </div>
     </div>
 
+    <!-- ============ CLEANING (category select) ============ -->
+    <div class="screen" id="clean">
+      <div class="header" style="background:var(--clean);">
+        <div class="toprow"><button class="back" onclick="nav('home')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box">🧹</div>
+          <div><h2>Cleaning Service</h2><p>House cleaning & car cleaning, on demand</p></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="service-pick" onclick="nav('clean-house')">
+          <div class="sicon" style="background:var(--clean-bg); color:var(--clean);">🏠</div>
+          <div style="flex:1;"><div style="font-weight:800; font-size:14px;">House Cleaning</div><div class="field-hint" style="margin:2px 0 0 0;">Verified cleaners, charged hourly</div></div>
+          <span style="color:var(--sub);">›</span>
+        </div>
+        <div class="service-pick" onclick="nav('clean-car')">
+          <div class="sicon" style="background:var(--gas-bg); color:var(--gas);">🚗</div>
+          <div style="flex:1;"><div style="font-weight:800; font-size:14px;">Car Cleaning</div><div class="field-hint" style="margin:2px 0 0 0;">Fixed-price wash, plus add-ons</div></div>
+          <span style="color:var(--sub);">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ HOUSE CLEANING (cleaner list) ============ -->
+    <div class="screen" id="clean-house">
+      <div class="header" style="background:var(--clean);">
+        <div class="toprow"><button class="back" onclick="nav('clean')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box">🏠</div>
+          <div><h2>House Cleaning</h2><p>In-home care style, charged by the hour</p></div>
+        </div>
+      </div>
+      <div class="content" id="houseCleanList"></div>
+    </div>
+
+    <!-- ============ HOUSE CLEANING DETAIL ============ -->
+    <div class="screen" id="clean-house-detail">
+      <div class="header" style="background:var(--clean);">
+        <div class="toprow"><button class="back" onclick="nav('clean-house')">←</button></div>
+        <h2>Cleaner Profile</h2>
+      </div>
+      <div class="content">
+        <div class="card">
+          <div class="detail-header">
+            <div class="detail-avatar" id="hcAvatarWrap"></div>
+            <div>
+              <div style="font-weight:800; font-size:15.5px;" id="hcName"></div>
+              <div class="stars" id="hcStars"></div>
+              <div style="font-size:11.5px; color:var(--sub); font-weight:700;" id="hcExp"></div>
+            </div>
+          </div>
+          <p class="desc" id="hcBio"></p>
+          <div id="hcCerts"></div>
+        </div>
+        <div class="card">
+          <div class="row"><span style="font-weight:800; color:var(--ink);">Hourly rate</span><span style="font-weight:900;" id="hcRate"></span></div>
+          <label class="flabel">Number of hours</label>
+          <div class="chiprow" id="hcHourChips"></div>
+        </div>
+        <div class="card">
+          <h3>📅 Choose date & time</h3>
+          <input type="date" id="cleanhouse-date">
+          <div class="time-select-row">
+            <select id="cleanhouse-time-hour"></select>
+            <span class="time-colon">:</span>
+            <select id="cleanhouse-time-min"></select>
+            <div class="ampm-row">
+              <div class="chip on" id="cleanhouse-time-am" onclick="setPeriod('cleanhouse','AM')">AM</div>
+              <div class="chip" id="cleanhouse-time-pm" onclick="setPeriod('cleanhouse','PM')">PM</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="desc" style="margin:0;">↩️ <strong>Cancellation policy:</strong> a 20% cancellation fee applies if you cancel this booking, to protect the cleaner's time.</p>
+        </div>
+        <button class="btn" id="hcConfirmBtn" style="background:var(--clean);" onclick="bookHouseCleaner()">Book This Cleaner</button>
+      </div>
+    </div>
+
+    <!-- ============ CAR CLEANING ============ -->
+    <div class="screen" id="clean-car">
+      <div class="header" style="background:var(--clean);">
+        <div class="toprow"><button class="back" onclick="nav('clean')">←</button></div>
+        <div class="header-icon-row">
+          <div class="header-icon-box">🚗</div>
+          <div><h2>Car Cleaning</h2><p>Fixed-price wash · optional add-ons</p></div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="card">
+          <h3>Choose a washer</h3>
+          <p class="desc">Each washer sets their own fixed wash price (RM10–RM20).</p>
+          <div id="carWasherList"></div>
+        </div>
+        <div class="card">
+          <h3>Add-ons (optional)</h3>
+          <p class="desc">Fixed price per add-on — select as many as you'd like.</p>
+          <div class="chiprow" id="carAddonChips"></div>
+        </div>
+        <div class="card">
+          <h3>📅 Choose date & time</h3>
+          <input type="date" id="cleancar-date">
+          <div class="time-select-row">
+            <select id="cleancar-time-hour"></select>
+            <span class="time-colon">:</span>
+            <select id="cleancar-time-min"></select>
+            <div class="ampm-row">
+              <div class="chip on" id="cleancar-time-am" onclick="setPeriod('cleancar','AM')">AM</div>
+              <div class="chip" id="cleancar-time-pm" onclick="setPeriod('cleancar','PM')">PM</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <p class="desc" style="margin:0;">↩️ <strong>Cancellation policy:</strong> a 20% cancellation fee applies if you cancel this booking, to protect the washer's time.</p>
+        </div>
+        <button class="btn" id="ccConfirmBtn" style="background:var(--clean);" disabled onclick="confirmCarCleanBooking()">Select a washer</button>
+      </div>
+    </div>
+
     <!-- ============ EXPENSE ============ -->
     <div class="screen" id="expense">
       <div class="header" style="background:var(--expense);">
@@ -903,7 +1062,7 @@ const state = {
   user: null,
   expenses: 0,
   points: 0,
-  byCategory: { repair:0, gas:0, care:0, recycle:0, pet:0 },
+  byCategory: { repair:0, gas:0, care:0, recycle:0, pet:0, clean:0 },
   bookings: [],
   addresses: [ {label:'Home', text:'27, Jalan Harmoni 5, Taman Bahagia, 81100 Johor Bahru, Johor'} ],
   activeAddressIndex: 0,
@@ -915,9 +1074,9 @@ const state = {
 function getActiveAddress(){
   return state.addresses[state.activeAddressIndex] || state.addresses[0];
 }
-const catLabel = { repair:'Repair', gas:'Gas Delivery', care:'Home Care', recycle:'Recycling', pet:'Pet Care' };
-const catColor = { repair:'var(--repair)', gas:'var(--gas)', care:'var(--care)', recycle:'var(--recycle)', pet:'var(--pet)' };
-const catBg = { repair:'var(--repair-bg)', gas:'var(--gas-bg)', care:'var(--care-bg)', recycle:'var(--recycle-bg)', pet:'var(--pet-bg)' };
+const catLabel = { repair:'Repair', gas:'Gas Delivery', care:'Home Care', recycle:'Recycling', pet:'Pet Care', clean:'Cleaning Service' };
+const catColor = { repair:'var(--repair)', gas:'var(--gas)', care:'var(--care)', recycle:'var(--recycle)', pet:'var(--pet)', clean:'var(--clean)' };
+const catBg = { repair:'var(--repair-bg)', gas:'var(--gas-bg)', care:'var(--care-bg)', recycle:'var(--recycle-bg)', pet:'var(--pet-bg)', clean:'var(--clean-bg)' };
 let authReturn = 'welcome';
 
 function nav(id){
@@ -995,7 +1154,7 @@ function refreshPoints(){
 }
 
 /* ---------------- DATE / TIME PICKER ---------------- */
-const timePrefixes = ['repair','gas','care','recycle','pet'];
+const timePrefixes = ['repair','gas','care','recycle','pet','cleanhouse','cleancar'];
 const selectedPeriod = {};
 function setPeriod(prefix, period){
   selectedPeriod[prefix] = period;
@@ -1032,7 +1191,7 @@ function getDateTimeLabel(prefix){
   return { dateLabel: dateLabel, slotLabel: slotLabel };
 }
 function initDateInputs(){
-  ['repair-date','gas-date','care-date','pet-date','recycle-date'].forEach(id => {
+  ['repair-date','gas-date','care-date','pet-date','recycle-date','cleanhouse-date','cleancar-date'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.value = todayISO();
   });
@@ -1074,55 +1233,87 @@ function showConfirm(title, price, rows){
 }
 
 /* ---------------- REPAIR ---------------- */
+// price ranges are inclusive of labor + equipment costs, split into a fixed base labor fee
+// plus a variable parts cost. The min/max spread is kept within RM20–30 per technician.
 const techData = {
   appliance: [
-    {id:'a1', name:'QuickFix Co.', rating:4.8, price:45, eta:'45 min', img:'https://i.pravatar.cc/100?img=12'},
-    {id:'a2', name:'HomeTech Services', rating:4.6, price:38, eta:'1 hr', img:'https://i.pravatar.cc/100?img=33'},
-    {id:'a3', name:'FixIt Pro', rating:4.9, price:52, eta:'30 min', img:'https://i.pravatar.cc/100?img=45'},
-    {id:'a4', name:'ApplianceCare Malaysia', rating:4.7, price:41, eta:'50 min', img:'https://i.pravatar.cc/100?img=51'}
+    {id:'a1', name:'QuickFix Co.', rating:4.8, base:45, partsMax:25, eta:'45 min', img:'https://i.pravatar.cc/100?img=12'},
+    {id:'a2', name:'HomeTech Services', rating:4.6, base:38, partsMax:22, eta:'1 hr', img:'https://i.pravatar.cc/100?img=33'},
+    {id:'a3', name:'FixIt Pro', rating:4.9, base:52, partsMax:28, eta:'30 min', img:'https://i.pravatar.cc/100?img=45'},
+    {id:'a4', name:'ApplianceCare Malaysia', rating:4.7, base:41, partsMax:25, eta:'50 min', img:'https://i.pravatar.cc/100?img=51'}
   ],
   furniture: [
-    {id:'f1', name:'WoodCraft Repairs', rating:4.7, price:40, eta:'1 hr', img:'https://i.pravatar.cc/100?img=22'},
-    {id:'f2', name:'Furniture Medic', rating:4.9, price:55, eta:'50 min', img:'https://i.pravatar.cc/100?img=8'},
-    {id:'f3', name:'Handy Homes', rating:4.5, price:33, eta:'1.5 hr', img:'https://i.pravatar.cc/100?img=14'},
-    {id:'f4', name:'RestoreIt Furniture', rating:4.6, price:37, eta:'1 hr', img:'https://i.pravatar.cc/100?img=65'}
+    {id:'f1', name:'WoodCraft Repairs', rating:4.7, base:40, partsMax:25, eta:'1 hr', img:'https://i.pravatar.cc/100?img=22'},
+    {id:'f2', name:'Furniture Medic', rating:4.9, base:55, partsMax:25, eta:'50 min', img:'https://i.pravatar.cc/100?img=8'},
+    {id:'f3', name:'Handy Homes', rating:4.5, base:33, partsMax:22, eta:'1.5 hr', img:'https://i.pravatar.cc/100?img=14'},
+    {id:'f4', name:'RestoreIt Furniture', rating:4.6, base:37, partsMax:23, eta:'1 hr', img:'https://i.pravatar.cc/100?img=65'}
   ],
   service: [
-    {id:'s1', name:'CoolBreeze AC Services', rating:4.9, price:70, eta:'1 hr', img:'https://i.pravatar.cc/100?img=5'},
-    {id:'s2', name:'TechCare Solutions', rating:4.7, price:65, eta:'1.5 hr', img:'https://i.pravatar.cc/100?img=18'},
-    {id:'s3', name:'AirPure Servicing', rating:4.8, price:75, eta:'45 min', img:'https://i.pravatar.cc/100?img=29'},
-    {id:'s4', name:'HomeServe Malaysia', rating:4.6, price:60, eta:'1 hr', img:'https://i.pravatar.cc/100?img=60'}
+    {id:'s1', name:'CoolBreeze AC Services', rating:4.9, base:70, partsMax:25, eta:'1 hr', img:'https://i.pravatar.cc/100?img=5'},
+    {id:'s2', name:'TechCare Solutions', rating:4.7, base:65, partsMax:25, eta:'1.5 hr', img:'https://i.pravatar.cc/100?img=18'},
+    {id:'s3', name:'AirPure Servicing', rating:4.8, base:75, partsMax:25, eta:'45 min', img:'https://i.pravatar.cc/100?img=29'},
+    {id:'s4', name:'HomeServe Malaysia', rating:4.6, base:60, partsMax:25, eta:'1 hr', img:'https://i.pravatar.cc/100?img=60'}
   ]
 };
 const repairIcon = { appliance:'🔌', furniture:'🛋️', service:'💨' };
 const repairTitle = { appliance:'Appliance Technicians', furniture:'Furniture Technicians', service:'Servicing Providers' };
+const repairDetailsTitle = { appliance:'Tell us about the appliance issue', furniture:'Tell us about the furniture issue', service:'Tell us what needs servicing' };
 let selectedRepairCategory = null;
 let selectedTechId = null;
+let repairPhotoDone = false;
 
 function openRepairCategory(cat){
   selectedRepairCategory = cat;
   selectedTechId = null;
-  document.getElementById('techTitle').innerText = repairTitle[cat];
-  document.getElementById('techIconBox').innerText = repairIcon[cat];
+  repairPhotoDone = false;
+  document.getElementById('detailsIconBox').innerText = repairIcon[cat];
+  document.getElementById('detailsTitle').innerText = repairDetailsTitle[cat];
+  document.getElementById('repairIssueDesc').value = '';
+  document.getElementById('repairCameraBox').classList.remove('done');
+  document.getElementById('repairCameraIcon').innerText = '📷';
+  document.getElementById('repairCameraText').innerText = 'Tap to add photo of the issue';
+  updateRepairDetailsBtn();
+  nav('repair-details');
+}
+
+function toggleRepairCameraProof(){
+  repairPhotoDone = !repairPhotoDone;
+  document.getElementById('repairCameraBox').classList.toggle('done', repairPhotoDone);
+  document.getElementById('repairCameraIcon').innerText = repairPhotoDone ? '✅' : '📷';
+  document.getElementById('repairCameraText').innerText = repairPhotoDone ? 'Photo added' : 'Tap to add photo of the issue';
+  updateRepairDetailsBtn();
+}
+
+function updateRepairDetailsBtn(){
+  const desc = document.getElementById('repairIssueDesc').value.trim();
+  document.getElementById('repairDetailsBtn').disabled = !(desc.length > 0 && repairPhotoDone);
+}
+
+function proceedToTechList(){
+  const desc = document.getElementById('repairIssueDesc').value.trim();
+  if(!desc || !repairPhotoDone) return;
+  document.getElementById('techTitle').innerText = repairTitle[selectedRepairCategory];
+  document.getElementById('techIconBox').innerText = repairIcon[selectedRepairCategory];
   renderTechs();
   nav('repair-tech');
 }
 
 function renderTechs(){
   const list = techData[selectedRepairCategory];
-  document.getElementById('techList').innerHTML = list.map(t =>
-    '<div class="pick-card ' + (selectedTechId===t.id?'selected':'') + '" onclick="selectTech(\'' + t.id + '\')">' +
+  document.getElementById('techList').innerHTML = list.map(t => {
+    const max = t.base + t.partsMax;
+    return '<div class="pick-card ' + (selectedTechId===t.id?'selected':'') + '" onclick="selectTech(\'' + t.id + '\')">' +
       '<div class="pav"><img src="' + t.img + '" alt=""></div>' +
       '<div class="pinfo"><div class="pname">' + t.name + '</div><div class="pmeta">★ ' + t.rating + ' · Arrives in ' + t.eta + '</div></div>' +
-      '<div class="pprice">RM' + t.price + '</div>' +
+      '<div class="pprice" style="font-size:12.5px; text-align:right;">RM' + t.base + '–' + max + '</div>' +
       '<div class="check">' + (selectedTechId===t.id?'✓':'') + '</div>' +
-    '</div>'
-  ).join('');
+    '</div>';
+  }).join('');
   const btn = document.getElementById('techConfirmBtn');
   if(selectedTechId){
     const t = list.find(x => x.id === selectedTechId);
     btn.disabled = false;
-    btn.innerText = 'Confirm Booking · RM' + t.price;
+    btn.innerText = 'Confirm Booking · From RM' + t.base;
   } else {
     btn.disabled = true;
     btn.innerText = 'Select a technician';
@@ -1133,14 +1324,19 @@ function selectTech(id){ selectedTechId = id; renderTechs(); }
 function confirmRepairBooking(){
   if(!selectedTechId) return;
   const t = techData[selectedRepairCategory].find(x => x.id === selectedTechId);
+  const max = t.base + t.partsMax;
   const label = selectedRepairCategory === 'appliance' ? 'Appliance Repair' : (selectedRepairCategory === 'furniture' ? 'Furniture Repair' : 'AC / Appliance Servicing');
   const dt = getDateTimeLabel('repair');
-  bookService('repair', label + ' · ' + t.name, t.price, [
+  bookService('repair', label + ' · ' + t.name, t.base, [
     {label:'Technician', value:t.name},
     {label:'Rating', value:'★ ' + t.rating},
     {label:'Date', value:dt.dateLabel},
     {label:'Time', value:dt.slotLabel},
-    {label:'Amount', value:'RM' + t.price.toFixed(2)}
+    {label:'Base Labor Fee', value:'RM' + t.base.toFixed(2)},
+    {label:'Parts Cost', value:'Variable (assessed on-site)'},
+    {label:'Estimated Total', value:'RM' + t.base + ' – RM' + max},
+    {label:'Inspection Fee', value:'RM30 (waived if you proceed)'},
+    {label:'Pricing', value:'No hidden charges'}
   ], { provider:t.name, dateLabel:dt.dateLabel, timeLabel:dt.slotLabel });
 }
 
@@ -1453,6 +1649,158 @@ function confirmPetBooking(){
   ], { provider:provider.name, dateLabel:dt.dateLabel, timeLabel:dt.slotLabel });
 }
 
+/* ---------------- CLEANING SERVICE ---------------- */
+// House cleaning follows the same in-home-care pattern: verified cleaners charged
+// by the hour, at a reasonable hourly rate.
+const houseCleaners = [
+  {id:'hc1', name:'Nurul Ain', img:'https://i.pravatar.cc/120?img=31', rating:4.8, specialty:'House Cleaning', rate:16, exp:'5 years experience',
+   bio:'Thorough and reliable house cleaner, experienced with kitchens, bathrooms and general tidying.',
+   certs:['Background Checked','Eco Products Trained']},
+  {id:'hc2', name:'Ravi Kumar', img:'https://i.pravatar.cc/120?img=53', rating:4.7, specialty:'House Cleaning', rate:15, exp:'3 years experience',
+   bio:'Efficient and detail-focused, great for regular weekly or bi-weekly home cleaning.',
+   certs:['Background Checked']},
+  {id:'hc3', name:'Wong Siew Fong', img:'https://i.pravatar.cc/120?img=48', rating:4.9, specialty:'Deep Cleaning', rate:20, exp:'7 years experience',
+   bio:'Specialist in deep cleaning — grout, windows, and hard-to-reach spots done right.',
+   certs:['Background Checked','Deep Clean Certified']},
+  {id:'hc4', name:'Farah Izzati', img:'https://i.pravatar.cc/120?img=25', rating:4.6, specialty:'House Cleaning', rate:14, exp:'2 years experience',
+   bio:'Friendly and budget-conscious cleaner, ideal for smaller apartments and studios.',
+   certs:['Background Checked']}
+];
+function renderHouseCleanList(){
+  document.getElementById('houseCleanList').innerHTML = houseCleaners.map(c =>
+    '<div class="card">' +
+      '<div class="detail-header" style="margin-bottom:10px;">' +
+        '<div class="detail-avatar" style="width:48px; height:48px; font-size:16px;"><img src="' + c.img + '" alt=""></div>' +
+        '<div><div style="font-weight:800; font-size:13.5px;">' + c.name + ' <span class="badge" style="background:var(--recycle-bg); color:var(--recycle);">Verified</span></div>' +
+        '<div class="stars">★ ' + c.rating + ' · ' + c.specialty + '</div></div>' +
+      '</div>' +
+      '<div class="row">' +
+        '<button class="btn outline small" onclick="viewHouseCleaner(\'' + c.id + '\')">View Profile</button>' +
+        '<button class="btn small" style="background:var(--clean);" onclick="viewHouseCleaner(\'' + c.id + '\')">RM' + c.rate + '/hr</button>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+let selectedHouseCleanerId = null;
+let selectedCleanHours = 2;
+const cleanHourOptions = [1,2,3,4];
+function viewHouseCleaner(id){
+  selectedHouseCleanerId = id;
+  selectedCleanHours = 2;
+  const c = houseCleaners.find(x => x.id === id);
+  document.getElementById('hcAvatarWrap').innerHTML = '<img src="' + c.img + '" alt="" style="width:100%;height:100%;object-fit:cover;">';
+  document.getElementById('hcName').innerText = c.name;
+  document.getElementById('hcStars').innerText = '★ ' + c.rating + ' · ' + c.specialty;
+  document.getElementById('hcExp').innerText = c.exp;
+  document.getElementById('hcBio').innerText = c.bio;
+  document.getElementById('hcCerts').innerHTML = c.certs.map(t => '<span class="cert-tag">✓ ' + t + '</span>').join('');
+  document.getElementById('hcRate').innerText = 'RM' + c.rate + '/hr';
+  renderHourChips();
+  nav('clean-house-detail');
+}
+function renderHourChips(){
+  const c = houseCleaners.find(x => x.id === selectedHouseCleanerId);
+  document.getElementById('hcHourChips').innerHTML = cleanHourOptions.map(h =>
+    '<div class="chip ' + (selectedCleanHours===h?'on':'') + '" onclick="selectCleanHours(' + h + ')">' + h + ' hr · RM' + (c.rate*h) + '</div>'
+  ).join('');
+  document.getElementById('hcConfirmBtn').innerText = 'Book This Cleaner · RM' + (c.rate*selectedCleanHours).toFixed(2);
+}
+function selectCleanHours(h){ selectedCleanHours = h; renderHourChips(); }
+function bookHouseCleaner(){
+  const c = houseCleaners.find(x => x.id === selectedHouseCleanerId);
+  if(!c) return;
+  const price = c.rate * selectedCleanHours;
+  const dt = getDateTimeLabel('cleanhouse');
+  bookService('clean', 'House Cleaning · ' + c.name, price, [
+    {label:'Cleaner', value:c.name},
+    {label:'Specialty', value:c.specialty},
+    {label:'Hourly Rate', value:'RM'+c.rate+'/hr'},
+    {label:'Duration', value:selectedCleanHours+' hour' + (selectedCleanHours>1?'s':'')},
+    {label:'Date', value:dt.dateLabel},
+    {label:'Time', value:dt.slotLabel},
+    {label:'Amount', value:'RM'+price.toFixed(2)},
+    {label:'Cancellation', value:'20% fee applies if cancelled'}
+  ], { provider:c.name, dateLabel:dt.dateLabel, timeLabel:dt.slotLabel });
+}
+renderHouseCleanList();
+
+// Car cleaning: each washer sets their own fixed wash price within RM10-RM20,
+// with optional fixed-price add-ons (coating, waxing, polishing, interior detailing).
+const carWashers = [
+  {id:'cw1', name:'ShineRight Auto Wash', img:'https://i.pravatar.cc/100?img=59', rating:4.8, price:10},
+  {id:'cw2', name:'SparkleCar Services', img:'https://i.pravatar.cc/100?img=61', rating:4.7, price:14},
+  {id:'cw3', name:'PrestigeWash Co.', img:'https://i.pravatar.cc/100?img=63', rating:4.9, price:18},
+  {id:'cw4', name:'QuickShine Mobile Wash', img:'https://i.pravatar.cc/100?img=67', rating:4.6, price:20}
+];
+const carAddons = [
+  {id:'wax', name:'Waxing', price:25},
+  {id:'coat', name:'Coating', price:80},
+  {id:'polish', name:'Polishing', price:40},
+  {id:'interior', name:'Interior Detailing', price:30}
+];
+let selectedCarWasherId = null;
+const selectedCarAddons = new Set();
+function renderCarWashers(){
+  document.getElementById('carWasherList').innerHTML = carWashers.map(w =>
+    '<div class="pick-card ' + (selectedCarWasherId===w.id?'selected':'') + '" onclick="selectCarWasher(\'' + w.id + '\')">' +
+      '<div class="pav"><img src="' + w.img + '" alt=""></div>' +
+      '<div class="pinfo"><div class="pname">' + w.name + '</div><div class="pmeta">★ ' + w.rating + ' · Fixed wash price</div></div>' +
+      '<div class="pprice">RM' + w.price + '</div>' +
+      '<div class="check">' + (selectedCarWasherId===w.id?'✓':'') + '</div>' +
+    '</div>'
+  ).join('');
+  renderCarAddons();
+}
+function selectCarWasher(id){ selectedCarWasherId = id; renderCarWashers(); updateCarCleanConfirmBtn(); }
+function renderCarAddons(){
+  document.getElementById('carAddonChips').innerHTML = carAddons.map(a =>
+    '<div class="chip ' + (selectedCarAddons.has(a.id)?'on':'') + '" onclick="toggleCarAddon(\'' + a.id + '\')">' + a.name + ' · RM' + a.price + '</div>'
+  ).join('');
+}
+function toggleCarAddon(id){
+  if(selectedCarAddons.has(id)) selectedCarAddons.delete(id); else selectedCarAddons.add(id);
+  renderCarAddons();
+  updateCarCleanConfirmBtn();
+}
+function carCleanTotal(){
+  const w = carWashers.find(x => x.id === selectedCarWasherId);
+  if(!w) return 0;
+  let total = w.price;
+  carAddons.forEach(a => { if(selectedCarAddons.has(a.id)) total += a.price; });
+  return total;
+}
+function updateCarCleanConfirmBtn(){
+  const btn = document.getElementById('ccConfirmBtn');
+  if(selectedCarWasherId){
+    btn.disabled = false;
+    btn.innerText = 'Confirm Booking · RM' + carCleanTotal().toFixed(2);
+  } else {
+    btn.disabled = true;
+    btn.innerText = 'Select a washer';
+  }
+}
+function confirmCarCleanBooking(){
+  if(!selectedCarWasherId) return;
+  const w = carWashers.find(x => x.id === selectedCarWasherId);
+  const addonNames = carAddons.filter(a => selectedCarAddons.has(a.id)).map(a => a.name + ' (RM' + a.price + ')');
+  const price = carCleanTotal();
+  const dt = getDateTimeLabel('cleancar');
+  bookService('clean', 'Car Cleaning · ' + w.name, price, [
+    {label:'Washer', value:w.name},
+    {label:'Base Wash', value:'RM'+w.price.toFixed(2)},
+    {label:'Add-ons', value: addonNames.length ? addonNames.join(', ') : 'None'},
+    {label:'Date', value:dt.dateLabel},
+    {label:'Time', value:dt.slotLabel},
+    {label:'Amount', value:'RM'+price.toFixed(2)},
+    {label:'Cancellation', value:'20% fee applies if cancelled'}
+  ], { provider:w.name, dateLabel:dt.dateLabel, timeLabel:dt.slotLabel });
+  selectedCarWasherId = null;
+  selectedCarAddons.clear();
+  renderCarWashers();
+  updateCarCleanConfirmBtn();
+}
+renderCarWashers();
+
 /* ---------------- BOOKINGS ---------------- */
 let bookingsTab = 'upcoming';
 function openBookings(){ nav('bookings'); renderBookings(); }
@@ -1557,10 +1905,14 @@ function renderBookings(){
     const sc = bookingStatusColor[b.status];
     let actions = '';
     if(b.status === 'upcoming'){
+      const cancelNote = b.category === 'repair' ? 'RM30 inspection fee applies if cancelled'
+        : b.category === 'recycle' ? 'Free cancellation'
+        : '20% cancellation fee applies';
       actions = '<div class="booking-actions">' +
         '<button class="btn outline small" onclick="cancelBooking(\'' + b.id + '\')">Cancel</button>' +
         '<button class="btn small" style="background:var(--navy);" onclick="completeBooking(\'' + b.id + '\')">Mark Completed</button>' +
-      '</div>';
+      '</div>' +
+      '<div class="field-hint" style="margin-top:6px;">' + cancelNote + '</div>';
     } else if(b.status === 'completed'){
       actions = b.rating > 0
         ? '<div class="stars" style="margin-top:8px;">' + '★'.repeat(b.rating) + '☆'.repeat(5-b.rating) + ' rated</div>' +
@@ -1579,11 +1931,36 @@ function renderBookings(){
   }).join('');
 }
 function categoryIcon(cat){
-  return { repair:'🔧', gas:'🔥', care:'❤️', recycle:'♻️', pet:'🐾' }[cat] || '🏠';
+  return { repair:'🔧', gas:'🔥', care:'❤️', recycle:'♻️', pet:'🐾', clean:'🧹' }[cat] || '🏠';
 }
+const INSPECTION_FEE = 30;
+// Cancellation policy: Repair/Service keeps its own RM30 inspection-fee logic, and
+// Recycling has no cancellation fee (bookings there don't charge for the service itself).
+// Every other service (Gas, Home Care, Pet Care, Cleaning Service) charges a 20%
+// cancellation fee, which stays recorded as an expense to protect the worker's time.
+const CANCELLATION_FEE_RATE = 0.2;
 function cancelBooking(id){
   const b = state.bookings.find(x => x.id === id);
-  if(b){ b.status = 'cancelled'; renderBookings(); }
+  if(b && b.status !== 'cancelled'){
+    let refund;
+    if(b.category === 'repair'){
+      refund = Math.max(0, b.price - INSPECTION_FEE);
+      b.price = Math.min(b.price, INSPECTION_FEE);
+    } else if(b.category === 'recycle'){
+      refund = b.price;
+      b.price = 0;
+    } else {
+      const fee = Math.round(b.price * CANCELLATION_FEE_RATE * 100) / 100;
+      refund = b.price - fee;
+      b.price = fee;
+    }
+    state.expenses -= refund;
+    state.byCategory[b.category] -= refund;
+    b.status = 'cancelled';
+    refreshHome();
+    refreshExpenseScreen();
+    renderBookings();
+  }
 }
 function completeBooking(id){
   const b = state.bookings.find(x => x.id === id);
